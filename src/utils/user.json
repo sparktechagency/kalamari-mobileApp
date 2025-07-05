@@ -1,0 +1,102 @@
+[
+  {
+    "id": "post_2",
+    "user": {
+      "id": "user_234",
+      "name": "John Doe",
+      "avatar": "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+      "location": "New York, NY"
+    },
+    "media": [
+      "https://example.com/posts/post_234567/image1.jpg",
+      "https://example.com/posts/post_234567/image2.jpg"
+    ],
+    "title": "Classic Cheeseburger",
+    "category": ["Meal", "Restaurant"],
+    "description": "Juicy beef patty topped with melted cheddar cheese, lettuce, and tomato.",
+    "likes": 1243,
+    "comments": 18,
+    "rating": 4.5,
+    "date": "2026-03-10"
+  },
+  {
+    "id": "post_3",
+    "user": {
+      "id": "user_456",
+      "name": "Sarah Lee",
+      "avatar": "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+      "location": "San Francisco, California"
+    },
+    "media": [
+      "https://example.com/posts/post_345678/image1.jpg",
+      "https://example.com/posts/post_345678/image2.jpg"
+    ],
+    "title": "Veggie Burrito",
+    "category": ["Meal", "Restaurant"],
+    "description": "A hearty vegetarian burrito with black beans, avocado, and grilled vegetables.",
+    "likes": 903,
+    "comments": 32,
+    "rating": 4.2,
+    "date": "2026-03-12"
+  },
+  {
+    "id": "post_4",
+    "user": {
+      "id": "user_567",
+      "name": "Michael Brown",
+      "avatar": "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+      "location": "Los Angeles, CA"
+    },
+    "media": [
+      "https://example.com/posts/post_456789/image1.jpg",
+      "https://example.com/posts/post_456789/image2.jpg"
+    ],
+    "title": "Grilled Chicken Salad",
+    "category": ["Meal", "Restaurant"],
+    "description": "Fresh grilled chicken on a bed of greens, tossed with balsamic vinaigrette.",
+    "likes": 1167,
+    "comments": 14,
+    "rating": 4.7,
+    "date": "2026-03-13"
+  },
+  {
+    "id": "post_5",
+    "user": {
+      "id": "user_678",
+      "name": "Olivia Smith",
+      "avatar": "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+      "location": "Austin, Texas"
+    },
+    "media": [
+      "https://example.com/posts/post_567890/image1.jpg",
+      "https://example.com/posts/post_567890/image2.jpg"
+    ],
+    "title": "Deluxe Pizza",
+    "category": ["Meal", "Restaurant"],
+    "description": "A pizza loaded with pepperoni, sausage, mushrooms, and extra cheese.",
+    "likes": 1345,
+    "comments": 27,
+    "rating": 4.3,
+    "date": "2026-03-14"
+  },
+  {
+    "id": "post_6",
+    "user": {
+      "id": "user_890",
+      "name": "James Williams",
+      "avatar": "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+      "location": "Chicago, Illinois"
+    },
+    "media": [
+      "https://example.com/posts/post_678901/image1.jpg",
+      "https://example.com/posts/post_678901/image2.jpg"
+    ],
+    "title": "Tuna Sushi Roll",
+    "category": ["Meal", "Restaurant"],
+    "description": "Fresh tuna sushi roll with avocado and a dash of wasabi.",
+    "likes": 789,
+    "comments": 15,
+    "rating": 4.1,
+    "date": "2026-03-16"
+  }
+]

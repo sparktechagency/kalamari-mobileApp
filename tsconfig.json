@@ -1,0 +1,25 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "src/app/auth/indexttsx",
+    "src/app/_layout.jsx",
+    "src/app/index.jsx",
+    "src/components/ui/Recent.jsx",
+    "src/app/auth/indexttsx",
+    "src/app/auth/_layout.jsx",
+    "src/app/redux/api/baseApi.js",
+    "src/app/redux/apiSlices/authApiSlice.js",
+    "src/app/redux/store.js",
+    "src/components/ui/CommentSection.jsx"
+  ]
+}
