@@ -4,11 +4,14 @@ export const postApi = api.injectEndpoints({
   overrideExisting: true, //Prevents duplicate endpoint errors
   endpoints: (builder) => ({
     // Login
-    shareMeal: builder.mutation({
+    createPost: builder.mutation({
       query: (formData) => ({
-        url: "/share-meal",
+        url: "/create-post", // This should match your Laravel route
         method: "POST",
         body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
       invalidatesTags: ["post"],
     }),
@@ -16,4 +19,4 @@ export const postApi = api.injectEndpoints({
 });
 
 // Export hooks
-export const { useShareMealMutation } = postApi;
+export const { useCreatePostMutation } = postApi;
