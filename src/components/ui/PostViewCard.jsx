@@ -338,7 +338,7 @@
 // export default React.memo(PostViewCard);
 
 import { Entypo } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
@@ -365,29 +365,18 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
   const [isHeart, setIsHeart] = useState(false);
   const [loveCount, setLoveCount] = useState(item?.love_reacts || 0);
 
-  // useEffect(() => {
-  //   if (item?.isHeart !== undefined) {
-  //     setIsHeart(item.isHeart);
-  //   }
-  // }, [item?.isHeart]);
-
-  console.log("texjsdfglisdf   hjiohoho", item);
-
   const safeDate = item?.created_at?.split(".")[0];
   const [postLike, { isLoading }] = usePostLikeMutation();
+
+  // const { data } = useUserDiscoveryAllPostQuery();
+  // console.log("----------------------------------------------------------");
+  // console.log("new data", data?.data?.data);
 
   const handleHeart = async (postId) => {
     try {
       const res = await postLike({ post_id: postId }).unwrap();
 
       console.log("text heart", res);
-
-      if (res?.status === true) {
-        setIsHeart(res?.isHeart);
-        setLoveCount((prev) =>
-          res?.isHeart ? prev + 1 : Math.max(prev - 1, 0)
-        );
-      }
     } catch (error) {
       console.error("Heart toggle failed:", error);
     }
@@ -411,7 +400,7 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
                 style={tw`flex-row items-center gap-2`}
               >
                 <Text style={tw`text-3.5 font-inter-700 text-[#121212]`}>
-                  {item?.user_name} {item?.id}
+                  {item?.user_name} id {item?.id}
                 </Text>
                 <SvgXml xml={IconVerify} />
               </TouchableOpacity>
@@ -456,10 +445,11 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
         <View style={tw`flex-row items-center gap-4`}>
           <View style={tw`flex-row items-center gap-1`}>
             <TouchableOpacity onPress={() => handleHeart(item?.id)}>
-              <SvgXml xml={isHeart ? IconHeart : IconLove} />
+              <SvgXml xml={item?.isHeart ? IconHeart : IconLove} />
             </TouchableOpacity>
+
             <Text style={tw`text-[13px] font-inter-600 text-[#454545]`}>
-              {loveCount}
+              {/* {data?.data?.data.love_reacts} */}d33
             </Text>
           </View>
 
@@ -468,7 +458,7 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
         </View>
 
         <View style={tw`ml-auto`}>
-          <BookMark postId={item?.id} />
+          <BookMark post={item} />
         </View>
       </View>
 
@@ -504,4 +494,4 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
   );
 };
 
-export default React.memo(PostViewCard);
+export default PostViewCard;
