@@ -51,6 +51,17 @@ export const commentApi = api.injectEndpoints({
       }),
       invalidatesTags: ["comment"],
     }),
+    //reply comments
+    postCommentDeleted: builder.mutation({
+      query: ({ comment_id }) => ({
+        url: `/delete-comment`,
+        method: "DELETE",
+        params: {
+          comment_id,
+        },
+      }),
+      invalidatesTags: ["comment"],
+    }),
   }),
 });
 
@@ -61,4 +72,5 @@ export const {
   usePostLinkCountMutation, //
   useReplyCommentsMutation, //
   usePostLikeMutation, //
+  usePostCommentDeletedMutation, //
 } = commentApi;
