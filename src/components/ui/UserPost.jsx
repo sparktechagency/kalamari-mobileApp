@@ -1,97 +1,202 @@
-import { useCallback, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
   Text,
+  View,
 } from "react-native";
-
-import { router } from "expo-router";
 import tw from "../../lib/tailwind";
-import { useDiscoveryAllPostQuery } from "../../redux/homeApi/homeApi";
+import { useLazyDiscoveryAllPostQuery } from "../../redux/homeApi/homeApi";
 import PostViewCard from "./PostViewCard";
 
 const UserPost = ({ isActiveTab, openModal }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
+  const [dataLoad, setDataLoad] = useState(false);
+  const [postsData, setDataPosts] = useState([]);
 
-  const { data, isLoading, isFetching, refetch } = useDiscoveryAllPostQuery(
-    { page },
-    { refetchOnMountOrArgChange: true }
-  );
+  const [getLazyDiscover, disvoverResuls] = useLazyDiscoveryAllPostQuery();
 
-  // console.log(data);
+  const hanldeDataLoad = async () => {
+    // console.log(
+    //   "Enter",
+    //   !dataLoad,
+    //   !disvoverResuls?.isLoading,
+    //   !disvoverResuls?.isFetching
+    // );
+    if (
+      !dataLoad &&
+      !disvoverResuls?.isLoading &&
+      !disvoverResuls?.isFetching
+    ) {
+      // console.log("Actual work");
+      setDataLoad(true);
 
-  const posts = useMemo(() => data?.data || [], [data]);
-  const hasMore = useMemo(
-    () => data?.meta?.current_page < data?.meta?.last_page,
-    [data]
-  );
+      getLazyDiscover({ page: page })
+        .then((res) => {
+          // console.log(res);
+          if (res?.data?.status) {
+            setDataPosts(postsData?.concat(res?.data?.data?.data));
+            setPage(res?.data?.data?.current_page + 1);
+          }
+        })
+        .finally(() => {
+          console.log("Eding");
+          setDataLoad(false);
+        });
+    }
+  };
 
-  const handleNavigate = useCallback(() => {
-    router.push(`/randomuser/${1}`);
+  useEffect(() => {
+    hanldeDataLoad();
   }, []);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setPage(1);
-    refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+  // if (disvoverResuls?.isLoading && page === 1) {
+  //   return (
+  //     <View style={tw`flex-1 justify-center items-center`}>
+  //       <ActivityIndicator size="large" />
+  //     </View>
+  //   );
+  // }
 
-  const loadMore = useCallback(() => {
-    if (!isFetching && hasMore) {
-      setPage((prev) => prev + 1);
-    }
-  }, [isFetching, hasMore]);
-
-  const renderItem = useCallback(
-    ({ item }) => (
-      <PostViewCard
-        item={item}
-        openModal={openModal}
-        handleNavigate={handleNavigate}
-        refetch={refetch}
-      />
-    ),
-    [handleNavigate, openModal, refetch]
-  );
+  // console.log("page of current" + page);
+  console.log(page);
 
   return (
-    <FlatList
-      data={posts?.data}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => item?.id?.toString() || index.toString()}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={["#ff0000"]}
-          tintColor="#ff0000"
-        />
-      }
-      ListFooterComponent={
-        isFetching ? <ActivityIndicator style={tw`my-4`} /> : null
-      }
-      ListEmptyComponent={
-        !isLoading && (
-          <Text style={tw`text-center py-10 text-gray-500`}>
-            No posts available
-          </Text>
-        )
-      }
-      onEndReached={loadMore}
-      onEndReachedThreshold={0.5}
-      initialNumToRender={5}
-      maxToRenderPerBatch={5}
-      windowSize={10}
-      removeClippedSubviews={true}
-      contentContainerStyle={tw`pb-20`}
-    />
+    <View style={tw`flex-1`}>
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={disvoverResuls?.refetch}
+            onRefresh={disvoverResuls?.isFetching}
+            colors={["#ff0000"]}
+            tintColor="#ff0000"
+          />
+        }
+        ListEmptyComponent={() => {
+          return (
+            <>
+              <Text style={tw`text-center py-10 text-gray-500`}>
+                No posts available
+              </Text>
+            </>
+          );
+        }}
+        ListFooterComponent={
+          disvoverResuls?.isLoading ? (
+            <ActivityIndicator style={tw`my-4`} />
+          ) : null
+        }
+        onEndReached={hanldeDataLoad}
+        onEndReachedThreshold={0.5}
+        data={postsData}
+        keyExtractor={(item) => item?.id}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <PostViewCard item={item} openModal={openModal} />
+        )}
+      />
+    </View>
   );
 };
 
 export default UserPost;
+
+// import { useCallback, useMemo, useState } from "react";
+// import {
+//   ActivityIndicator,
+//   FlatList,
+//   RefreshControl,
+//   Text,
+// } from "react-native";
+
+// import { router } from "expo-router";
+// import tw from "../../lib/tailwind";
+// import { useDiscoveryAllPostQuery } from "../../redux/homeApi/homeApi";
+// import PostViewCard from "./PostViewCard";
+
+// const UserPost = ({ isActiveTab, openModal }) => {
+//   const [refreshing, setRefreshing] = useState(false);
+//   const [page, setPage] = useState(1);
+
+//   const { data, isLoading, isFetching, refetch } = useDiscoveryAllPostQuery(
+//     { page },
+//     { refetchOnMountOrArgChange: true }
+//   );
+
+//   // console.log(data);
+
+//   const posts = useMemo(() => data?.data || [], [data]);
+//   const hasMore = useMemo(
+//     () => data?.meta?.current_page < data?.meta?.last_page,
+//     [data]
+//   );
+
+//   const handleNavigate = useCallback(() => {
+//     router.push(`/randomuser/${1}`);
+//   }, []);
+
+//   const onRefresh = useCallback(() => {
+//     setRefreshing(true);
+//     setPage(1);
+//     refetch().finally(() => setRefreshing(false));
+//   }, [refetch]);
+
+//   const loadMore = useCallback(() => {
+//     if (!isFetching && hasMore) {
+//       setPage((prev) => prev + 1);
+//     }
+//   }, [isFetching, hasMore]);
+
+//   const renderItem = useCallback(
+//     ({ item }) => (
+//       <PostViewCard
+//         item={item}
+//         openModal={openModal}
+//         handleNavigate={handleNavigate}
+//         refetch={refetch}
+//       />
+//     ),
+//     [handleNavigate, openModal, refetch]
+//   );
+
+//   return (
+//     <FlatList
+//       data={posts?.data}
+//       renderItem={renderItem}
+//       keyExtractor={(item, index) => item?.id?.toString() || index.toString()}
+//       showsVerticalScrollIndicator={false}
+//       refreshControl={
+//         <RefreshControl
+//           refreshing={refreshing}
+//           onRefresh={onRefresh}
+//           colors={["#ff0000"]}
+//           tintColor="#ff0000"
+//         />
+//       }
+//       ListFooterComponent={
+//         isFetching ? <ActivityIndicator style={tw`my-4`} /> : null
+//       }
+//       ListEmptyComponent={
+//         !isLoading && (
+//           <Text style={tw`text-center py-10 text-gray-500`}>
+//             No posts available
+//           </Text>
+//         )
+//       }
+//       onEndReached={loadMore}
+//       onEndReachedThreshold={0.5}
+//       initialNumToRender={5}
+//       maxToRenderPerBatch={5}
+//       windowSize={10}
+//       removeClippedSubviews={true}
+//       contentContainerStyle={tw`pb-20`}
+//     />
+//   );
+// };
+
+// export default UserPost;
 
 // import { useCallback, useEffect, useMemo, useState } from "react";
 // import {
