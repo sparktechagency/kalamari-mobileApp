@@ -54,11 +54,18 @@ const TagPeopleView = ({ isVisible, setIsVisible, setuserName, newTag }) => {
 
   const handleAdd = () => {
     const selectedUsers = sampleUsers.filter((u) => selectedIds.includes(u.id));
-    const names = selectedUsers.map((u) => u.name).join(", ");
 
-    // console.log(names, newTag);
+    // For single tag selection (if newTag is true)
+    if (newTag) {
+      const names = selectedUsers.map((u) => u.name);
+      setuserName(names); // This will be an array of names
+    }
+    // For multiple tags comma-separated
+    else {
+      const names = selectedUsers.map((u) => u.name).join(", ");
+      setuserName(names); // This will be a string
+    }
 
-    setuserName(names);
     setIsVisible(false);
   };
 
@@ -69,17 +76,15 @@ const TagPeopleView = ({ isVisible, setIsVisible, setuserName, newTag }) => {
   return (
     <View>
       {/* Button to open modal */}
-      <View
+      <TouchableOpacity
         style={tw`flex-row items-center px-4 justify-center gap-2 border border-[#B0B0B0] rounded-md py-1.5`}
+        onPress={() => setIsVisible(true)}
       >
-        <TouchableOpacity
-          style={tw`flex-row items-center gap-1.5`}
-          onPress={() => setIsVisible(true)}
-        >
-          <SvgXml xml={IconTagUser} />
-          <Text style={tw`text-base font-bold text-[#121212]`}>Tag people</Text>
-        </TouchableOpacity>
-      </View>
+        <SvgXml xml={IconTagUser} />
+        <Text style={tw`text-base font-inter-600 text-[#121212]`}>
+          Tag people
+        </Text>
+      </TouchableOpacity>
 
       {/* Tag Modal */}
       <Modal
