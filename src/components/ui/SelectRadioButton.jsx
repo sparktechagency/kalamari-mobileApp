@@ -56,13 +56,13 @@ const SelectRadioButton = ({
         <View style={tw`flex-row gap-6`}>
           <CustomRadioButton
             label="Meal"
-            selected={selectedOptionFood === "meal"}
-            onPress={() => setSelectedOptionFood("meal")}
+            selected={selectedOptionFood === "Meal"}
+            onPress={() => setSelectedOptionFood("Meal")}
           />
           <CustomRadioButton
             label="Drink"
-            selected={selectedOptionFood === "drink"}
-            onPress={() => setSelectedOptionFood("drink")}
+            selected={selectedOptionFood === "Drink"}
+            onPress={() => setSelectedOptionFood("Drink")}
           />
         </View>
       </View>
