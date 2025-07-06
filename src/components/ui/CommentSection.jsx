@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import CommentItem from "./CommentItem";
 
-const CommentSection = ({ data }) => {
+const CommentSection = ({ data, isLoading }) => {
   const [activeReplyId, setActiveReplyId] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [openReplies, setOpenReplies] = useState({});
@@ -32,6 +32,7 @@ const CommentSection = ({ data }) => {
             setReplyText={setReplyText}
             setActiveReplyId={setActiveReplyId}
             handleOpenReplyContent={handleOpenReplyContent}
+            isLoading={isLoading}
           />
         </View>
       ))}
