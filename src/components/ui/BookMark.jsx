@@ -115,131 +115,41 @@
 
 import { IconBookMark, IconBookMarkFull } from "@/assets/Icon";
 import tw from "@/src/lib/tailwind";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { useUserBookMarkMutation } from "../../redux/listApi/listApi";
-import BookMarkCustomRadioButton from "./BookMarkCustomRadioButton";
+import { useUserBookMarkMutation } from "../../redux/homeApi/homeApi";
 
-const BookMark = ({ postId }) => {
-  // console.log("postId : ", postId);
-
+const BookMark = ({ post }) => {
   const [isBookMark, setIsBookMark] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
   const [bookMark, { isLoading }] = useUserBookMarkMutation();
 
-  const handleBookmark = () => {
-    if (!isBookMark) {
-      setIsVisible(true); // Show modal for first time bookmark
-    } else {
-      Alert.alert(
-        "Remove Bookmark",
-        "Are you sure you want to remove this from bookmarks?",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Remove",
-            onPress: async () => {
-              try {
-                await handleUserBookMark();
-                setIsBookMark(false);
-              } catch (error) {
-                console.error("Failed to remove bookmark:", error);
-              }
-            },
-            style: "destructive",
-          },
-        ]
-      );
-    }
-  };
+  // console.log(post);
 
   const handleUserBookMark = async () => {
     try {
-      const result = await bookMark({
-        post_id: postId,
-        type: selectedOption,
+      const option = post?.have_it === "Restaurant" ? 1 : 2;
+
+      const res = await bookMark({
+        post_id: post?.id,
+        type: option,
       }).unwrap();
-
-      console.log(result);
-
-      // if (result.success) {
-      //   setIsBookMark(!isBookMark);
-      // }
+      console.log(res);
     } catch (error) {
       console.error("Bookmark error:", error);
       Alert.alert("Error", "Failed to update bookmark");
-      throw error;
     }
   };
 
   return (
     <View style={tw`justify-center items-center`}>
-      <TouchableOpacity onPress={handleBookmark} disabled={isLoading}>
+      <TouchableOpacity onPress={handleUserBookMark}>
         {isBookMark ? (
           <SvgXml xml={IconBookMarkFull} />
         ) : (
           <SvgXml xml={IconBookMark} />
         )}
       </TouchableOpacity>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isVisible}
-        onRequestClose={() => setIsVisible(false)}
-      >
-        <View
-          style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}
-        >
-          <View style={tw`bg-white shadow-lg rounded-xl w-72 p-6`}>
-            <View style={tw`flex-row justify-between items-center mb-4`}>
-              <Text style={tw`text-xl font-inter-700 text-gray-900`}>
-                Add to?
-              </Text>
-              <MaterialIcons
-                name="close"
-                size={24}
-                color="black"
-                onPress={() => setIsVisible(false)}
-              />
-            </View>
-
-            <View style={tw`mb-6 flex-col gap-2`}>
-              <BookMarkCustomRadioButton
-                label="Restaurant List"
-                selected={selectedOption === "1"}
-                onPress={() => setSelectedOption("1")}
-              />
-              <BookMarkCustomRadioButton
-                label="Recipe List"
-                selected={selectedOption === "2"}
-                onPress={() => setSelectedOption("2")}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={async () => {
-                await handleUserBookMark();
-                setIsVisible(false);
-              }}
-              style={tw`bg-orange py-3 rounded-full w-full items-center ${
-                !selectedOption ? "opacity-50" : "opacity-100"
-              }`}
-              disabled={!selectedOption || isLoading}
-            >
-              <Text style={tw`text-white font-inter-700`}>
-                {isLoading ? "Saving..." : "Add"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
