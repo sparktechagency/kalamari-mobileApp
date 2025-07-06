@@ -12,7 +12,7 @@ export const homeApi = api.injectEndpoints({
       providesTags: ["home"],
     }),
     discoveryAllPost: builder.query({
-      query: ({ page, perPage } = {}) => ({
+      query: ({ page, perPage = 10 } = {}) => ({
         url: `/discovery`,
         method: "GET",
         params: {
@@ -20,21 +20,36 @@ export const homeApi = api.injectEndpoints({
           per_page: perPage,
         },
       }),
-      invalidatesTags: ["home"],
+      providesTags: ["home"],
     }),
-    // discoveryAllPost: builder.query({
-    //   query: ({ page = 1, perPage = 10 } = {}) => ({
-    //     url: `/discovery?per_page=${perPage}&page=${page}`,
-    //     method: "GET",
-    //     params: {
-    //       page,
-    //       per_page: perPage,
-    //     },
-    //   }),
-    //   providesTags: ["home"],
-    // }),
+    userDiscoveryAllPost: builder.query({
+      query: () => ({
+        url: `/discovery`,
+        method: "GET",
+      }),
+      providesTags: ["home"],
+    }),
+    userBookMark: builder.mutation({
+      query: ({ post_id, type }) => ({
+        url: `/toggle-bookmark`,
+        method: "POST",
+        body: {
+          // Changed from params to body since it's a POST request
+          post_id,
+          type,
+        },
+      }),
+      // Automatically refetch relevant queries after mutation
+      invalidatesTags: ["bookmarks"],
+    }),
   }),
 });
 
 // Export hooks
-export const { useSearchUserQuery, useDiscoveryAllPostQuery } = homeApi;
+export const {
+  useUserBookMarkMutation,
+  useSearchUserQuery,
+  useUserDiscoveryAllPostQuery,
+  useDiscoveryAllPostQuery,
+  useLazyDiscoveryAllPostQuery,
+} = homeApi;
