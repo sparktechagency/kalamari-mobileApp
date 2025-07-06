@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -17,7 +16,7 @@ import TagManager from "../../../components/ui/TagManager";
 import TagPepoleView from "../../../components/ui/TagPepoleView";
 import UserRating from "../../../components/ui/UserRating";
 import tw from "../../../lib/tailwind";
-import { useShareMealMutation } from "../../../redux/postApi/postApi";
+import { useCreatePostMutation } from "../../../redux/postApi/postApi";
 
 //  updated and more better code readabel
 
@@ -32,65 +31,72 @@ const Post = () => {
   const [rating, setRating] = useState("");
   const [restaurant, setRestaurant] = useState("");
   const [tags, setTags] = useState([]);
-  const [image, setImage] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [hover, setHover] = useState("");
-  const [userPostData, { isLoading }] = useShareMealMutation();
+  const [createPost, { isLoading }] = useCreatePostMutation();
+
+  const [image, setImage] = useState([]);
+  // console.log(image);
+
+  console.log(selectedOption, selectedOptionFood);
+
+  const convertToUniqueTagArrays = (tags) => {
+    const splitAndTrimmed = tags
+      .join(",") // "Alex, Mia, Mia"
+      .split(",") // ["Alex", " Mia", " Mia"]
+      .map((name) => name.trim()); // ["Alex", "Mia", "Mia"]
+
+    const uniqueNames = Array.from(new Set(splitAndTrimmed)); // ["Alex", "Mia"]
+
+    const result = uniqueNames.map((name) => [name]); // [["Alex"], ["Mia"]]
+    return result;
+  };
+
+  const result = convertToUniqueTagArrays(tags);
+  // console.log(result); // [["Alex"], ["Mia"]]
 
   const handleSubmit = async () => {
-    // Create FormData object
+    // Validate required fields
+    // if (!mealName || !description || !selectedLocation || !restaurant || !rating) {
+    //   Alert.alert('Error', 'Please fill all required fields');
+    //   return;
+    // }
+
     const formData = new FormData();
 
-    // Append simple fields
-    formData.append("meal_name", "Text"); // minimal 2 characters, required
-    formData.append("have_it", "1"); // required (1 for Restaurant, 2 for Home-made)
-    formData.append("restaurant_name", "Restaurant_name"); // nullable
-    formData.append("food_type", "Meal"); // required
-    formData.append("location", "Asthuliya"); // nullable
-    formData.append("description", "Wow very nice and testy."); // required
-    formData.append("rating", "4"); // nullable
-
-    // Append tags as a JSON string array
-    const hardcodedTags = ["tag 1", "tag 2", "tag 3"];
-    formData.append("tagged", JSON.stringify(hardcodedTags));
-
-    // Append images as separate form fields with the same name
-    const hardcodedImages = [
-      {
-        uri: "file://path/to/image1.jpg",
-        type: "image/jpeg",
-        name: "image1.jpg",
-      },
-      {
-        uri: "file://path/to/image2.jpg",
-        type: "image/jpeg",
-        name: "image2.jpg",
-      },
-      {
-        uri: "file://path/to/image3.jpg",
-        type: "image/jpeg",
-        name: "image3.jpg",
-      },
-    ];
-
-    // Append each image with the same key 'images[]'
-    hardcodedImages.forEach((img) => {
-      formData.append("images[]", img);
+    // Add all form fields
+    // formData.append("user_name", result);
+    formData.append("meal_name", mealName);
+    formData.append("description", description);
+    formData.append("have_it", selectedOption === "Restaurant" ? "1" : "2");
+    formData.append("food_type", selectedOptionFood);
+    formData.append("location", selectedLocation);
+    formData.append("rating", rating);
+    formData.append("restaurant_name", restaurant);
+    // Add tags to FormData
+    tags.forEach((tag, index) => {
+      formData.append(`tagged[${index}]`, result);
     });
 
-    // Log the FormData entries for debugging
-    const entries = Array.from(formData.entries());
-    for (let [key, value] of entries) {
-      console.log(`${key}:`, value);
-    }
+    // Or alternative approach for JSON
+    // formData.append("tagged", JSON.stringify(tags));
+
+    // Add images
+    image.forEach((image, index) => {
+      formData.append(`images[${index}]`, {
+        uri: image.uri,
+        name: image.fileName || `image_${Date.now()}_${index}.jpg`,
+        type: image.mimeType || "image/jpeg",
+      });
+    });
+
+    // console.log(formData);
 
     try {
-      const response = await userPostData(formData).unwrap();
-      console.log("API response:", response);
-      Alert.alert("Success", "Your meal has been shared successfully!");
+      const res = await createPost(formData).unwrap();
+      console.log(res);
     } catch (error) {
-      console.error("Submit failed:", error);
-      Alert.alert("Warning", "Failed to share your meal. Please try again.");
+      console.log(error);
     }
   };
   return (
@@ -178,7 +184,7 @@ const Post = () => {
               setNewTag={setuserName}
             />
 
-            {!!image && (
+            {image && (
               <TouchableOpacity
                 style={tw`w-20`}
                 onPress={() => setModalVisible(true)}
@@ -190,8 +196,7 @@ const Post = () => {
             )}
 
             {/* Photo and People Tagging */}
-
-            <View style={tw`flex-row  items-center justify-around`}>
+            <View style={tw`flex-row justify-evenly items-center`}>
               <AddPhoto
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
