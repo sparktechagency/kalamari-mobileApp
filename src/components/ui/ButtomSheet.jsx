@@ -114,10 +114,12 @@ const ButtomSheet = ({ item }) => {
                   color="#121212"
                   onPress={closeModal}
                 />
+
+                {/* <Text>tan</Text> */}
               </View>
 
               {/* Comment Section */}
-              <CommentSection data={data} />
+              <CommentSection data={data} isLoading={isLoading} />
 
               <View
                 style={tw`flex-row items-center bg-[#F3F3F3] rounded-full px-3 py-2 mt-2`}
