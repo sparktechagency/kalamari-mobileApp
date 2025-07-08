@@ -43,7 +43,13 @@ const Home = () => {
 
   const { width } = Dimensions.get("window");
 
+  const isLoading = true;
+
+  // if (isLoading) {
+  // }
+
   return (
+    // <Text style={tw`flex-1  bg-[#FDFFFE] `}>Loading</Text>
     <View style={tw`flex-1  bg-[#FDFFFE] `}>
       {/* top header */}
       <View style={tw` flex-1 px-[4%] `}>
