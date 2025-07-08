@@ -82,7 +82,7 @@ const Post = () => {
 
     try {
       const res = await createPost(formData).unwrap();
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log(error);
     }
