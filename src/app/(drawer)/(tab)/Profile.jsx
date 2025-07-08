@@ -2,16 +2,39 @@
 import { IconRecents, Iconsfollower } from "@/assets/Icon";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import ProfileViewImage from "../../../components/ui/ProfileViewImage";
 import RecentActivityList from "../../../components/ui/RecentActivityListRandomUser";
 import tw from "../../../lib/tailwind";
+import { useGetProfileQuery } from "../../../redux/apiSlices/authApiSlice";
+import {
+  useGetUserFolloweQuery,
+  useGetUserFollowingQuery,
+} from "../../../redux/profileApi/profileApi";
 
 // tabs name and icons
 
 const Profile = () => {
-  return (
+  const { data: useData, isLoading, refetch } = useGetProfileQuery();
+  console.log("useData", useData);
+
+  const { data: getUserFollowing, isLoading: followingLoading } =
+    useGetUserFollowingQuery({
+      user_id: useData?.data?.id,
+    });
+  const { data: getUserFollow, isLoading: followLoading } =
+    useGetUserFolloweQuery({
+      user_id: useData?.data?.id,
+    });
+
+  console.log("getUserFollow : ", getUserFollow);
+
+  return isLoading ? (
+    <View style={tw`flex-1 justify-center items-center`}>
+      <ActivityIndicator size="large" color="#F97316" />
+    </View>
+  ) : (
     <View style={tw` flex-1  bg-primaryBg`}>
       <View style={tw` flex-1 px-[4%]`}>
         <View style={tw`flex-row items-center gap-2 my-6`}>
@@ -30,21 +53,23 @@ const Profile = () => {
         <View style={tw`mb-3`}>
           {/* Profile image and badge */}
           <View style={tw``}>
-            <ProfileViewImage />
+            <ProfileViewImage user={useData?.data} />
           </View>
 
           {/* Name and handle */}
           <View style={tw`mt-4 items-center`}>
-            <Text style={tw`text-xl font-inter-700`}>Mark Phillips</Text>
+            <Text style={tw`text-xl font-inter-700`}>
+              {useData?.data?.name}
+            </Text>
             <Text style={tw`text-3 text-textgray font-inter-500`}>
-              @marke_7
+              {useData?.data?.user_name}
             </Text>
           </View>
 
           {/* Bio */}
           <Text style={tw`text-center text-textgray mt-4 leading-6`}>
-            Food lover sharing my journey through bites, sips unforgettable
-            meals 🍕🍔🌮
+            {useData?.data?.bio ||
+              "Food lover sharing my journey through bites, sips unforgettable meals 🍕🍔🌮"}
           </Text>
 
           {/* Follower stats */}
@@ -52,11 +77,17 @@ const Profile = () => {
             <TouchableOpacity>
               <Link href={"/userfollowing"}>
                 <View
-                  style={tw`items-center  justify-center flex-row gap-1.3  p-2 rounded-2 px-6 `}
+                  style={tw`items-center bg-[#D5D5D51A] justify-center flex-row gap-1.3  p-2 rounded-2 px-6 `}
                 >
                   <SvgXml xml={Iconsfollower} />
                   <Text style={tw` font-inter-400 `}>Followers:</Text>
-                  <Text style={tw`text-textPrimary font-inter-700`}>5.1k</Text>
+                  {followLoading ? (
+                    ""
+                  ) : (
+                    <Text style={tw`text-textPrimary font-inter-700`}>
+                      {getUserFollow?.follower_count}
+                    </Text>
+                  )}
                 </View>
               </Link>
             </TouchableOpacity>
@@ -64,11 +95,17 @@ const Profile = () => {
             <TouchableOpacity>
               <Link href={"/userfollowing/following"}>
                 <View
-                  style={tw`items-center justify-center flex-row gap-1.3  p-2 rounded-2 px-6 `}
+                  style={tw`items-center bg-[#D5D5D51A] justify-center flex-row gap-1.3  p-2 rounded-2 px-6 `}
                 >
                   <SvgXml xml={Iconsfollower} />
                   <Text style={tw` font-inter-400 `}>Following:</Text>
-                  <Text style={tw`text-textPrimary font-inter-700`}>1.1k</Text>
+                  {followingLoading ? (
+                    ""
+                  ) : (
+                    <Text style={tw`text-textPrimary font-inter-700`}>
+                      {getUserFollowing?.following_count}
+                    </Text>
+                  )}
                 </View>
               </Link>
             </TouchableOpacity>
