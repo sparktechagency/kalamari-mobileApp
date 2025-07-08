@@ -16,16 +16,18 @@ import {
 } from "react-native";
 import tw from "../../lib/tailwind";
 
-export default function UserCamera({ onClose }) {
+export default function UserCamera({ onClose, setPhotos, photos }) {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [photos, setPhotos] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [flashMode, setFlashMode] = useState("off");
   const [galleryPermission, setGalleryPermission] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const cameraRef = useRef(null);
+
+  // get api
+  // console.log("photos", photos);
 
   // Request camera and media library permissions
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function UserCamera({ onClose }) {
     );
   }
 
-  if (!permission.granted) {
+  if (!permission?.granted) {
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>
