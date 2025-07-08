@@ -58,18 +58,18 @@ export const api = createApi({
     "home",
     "comment",
     "bookmarks",
-    "equipment",
-    "quests",
+    "profile",
+    "randomuser",
     "setting",
     "subscription",
   ],
 });
 
-export const ImageUrl = "http://182.252.68.227:10000";
+export const ImageUrl = "http://10.10.10.65:8000";
 
 export const makeImage = (url) => {
   if (url) {
     return ImageUrl + url;
   }
-  return "";
+  return null;
 };
