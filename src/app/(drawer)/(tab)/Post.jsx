@@ -17,6 +17,7 @@ import TagPepoleView from "../../../components/ui/TagPepoleView";
 import UserRating from "../../../components/ui/UserRating";
 import tw from "../../../lib/tailwind";
 import { useCreatePostMutation } from "../../../redux/postApi/postApi";
+import { convertToUniqueTagArrays } from "../../../utils/convertToUniqueTagArrays";
 
 //  updated and more better code readabel
 
@@ -36,21 +37,8 @@ const Post = () => {
   const [createPost, { isLoading }] = useCreatePostMutation();
 
   const [image, setImage] = useState([]);
-  // console.log(image);
 
-  console.log(selectedOption, selectedOptionFood);
-
-  const convertToUniqueTagArrays = (tags) => {
-    const splitAndTrimmed = tags
-      .join(",") // "Alex, Mia, Mia"
-      .split(",") // ["Alex", " Mia", " Mia"]
-      .map((name) => name.trim()); // ["Alex", "Mia", "Mia"]
-
-    const uniqueNames = Array.from(new Set(splitAndTrimmed)); // ["Alex", "Mia"]
-
-    const result = uniqueNames.map((name) => [name]); // [["Alex"], ["Mia"]]
-    return result;
-  };
+  console.log(selectedOption, "selectedOption");
 
   const result = convertToUniqueTagArrays(tags);
   // console.log(result); // [["Alex"], ["Mia"]]
@@ -142,14 +130,14 @@ const Post = () => {
             />
 
             {/* Location Input (Conditional) */}
-            {selectedOption !== "home-made" && (
+            {selectedOption !== "2" && (
               <Location setSelectedLocation={setSelectedLocation} />
             )}
 
             {/* Description/Recipe Input */}
             <View style={tw`flex-col gap-2`}>
               <Text style={tw`text-base font-semibold text-textPrimary`}>
-                {selectedOption === "home-made" ? "Recipe" : "Description"}
+                {selectedOption === "2" ? "Recipe" : "Description"}
               </Text>
               <View style={tw`bg-[#F3F3F3] rounded-lg h-30`}>
                 <TextInput
