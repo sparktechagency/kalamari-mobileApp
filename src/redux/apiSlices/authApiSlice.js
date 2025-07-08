@@ -81,17 +81,7 @@ export const AuthApiSlice = api.injectEndpoints({
       query: () => ({
         url: `/profile`,
       }),
-      providesTags: ["auth"],
-    }),
-
-    // Update Profile Info
-    updateProfile: builder.mutation({
-      query: (data) => ({
-        url: `/profile-update?_method=PUT`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["auth"],
+      providesTags: ["auth", "profile"],
     }),
 
     // Token Validation
