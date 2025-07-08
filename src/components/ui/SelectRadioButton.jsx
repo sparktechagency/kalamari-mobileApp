@@ -32,7 +32,7 @@ const SelectRadioButton = ({
       </View>
 
       <>
-        {selectedOption === "restaurant" && (
+        {selectedOption === "1" && (
           <View style={tw`flex-col gap-2`}>
             <Text style={tw`text-[16px] font-inter-600 text-[#121212]`}>
               Restaurant Name
