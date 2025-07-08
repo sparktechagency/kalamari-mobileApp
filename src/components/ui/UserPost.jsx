@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  Text,
   View,
 } from "react-native";
 import tw from "../../lib/tailwind";
@@ -19,12 +18,6 @@ const UserPost = ({ isActiveTab, openModal }) => {
   const [getLazyDiscover, disvoverResuls] = useLazyDiscoveryAllPostQuery();
 
   const hanldeDataLoad = async () => {
-    // console.log(
-    //   "Enter",
-    //   !dataLoad,
-    //   !disvoverResuls?.isLoading,
-    //   !disvoverResuls?.isFetching
-    // );
     if (
       !dataLoad &&
       !disvoverResuls?.isLoading &&
@@ -61,7 +54,7 @@ const UserPost = ({ isActiveTab, openModal }) => {
   // }
 
   // console.log("page of current" + page);
-  console.log(page);
+  // console.log(page);
 
   return (
     <View style={tw`flex-1`}>
@@ -70,22 +63,22 @@ const UserPost = ({ isActiveTab, openModal }) => {
           <RefreshControl
             refreshing={disvoverResuls?.refetch}
             onRefresh={disvoverResuls?.isFetching}
-            colors={["#ff0000"]}
-            tintColor="#ff0000"
+            colors={["#ED6237"]}
+            tintColor="#ED6237"
           />
         }
-        ListEmptyComponent={() => {
-          return (
-            <>
-              <Text style={tw`text-center py-10 text-gray-500`}>
-                No posts available
-              </Text>
-            </>
-          );
-        }}
+        // ListEmptyComponent={() => {
+        //   return (
+        //     <>
+        //       <Text style={tw`text-center py-10 text-gray-500`}>
+        //         No posts available
+        //       </Text>
+        //     </>
+        //   );
+        // }}
         ListFooterComponent={
           disvoverResuls?.isLoading ? (
-            <ActivityIndicator style={tw`my-4`} />
+            <ActivityIndicator color={"#ED6237"} style={tw`my-4`} />
           ) : null
         }
         onEndReached={hanldeDataLoad}
