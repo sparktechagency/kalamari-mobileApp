@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { Ionicons, Octicons, SimpleLineIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import Header from "../../../components/ui/Header";
 import ReportInput from "../../../components/ui/ReportInput";
 import UserPost from "../../../components/ui/UserPost";
@@ -22,8 +23,8 @@ const Home = () => {
   useEffect(() => {
     const fetchToken = async () => {
       const token = await storage.getString("token");
-      if (token) {
-        // router.push("/(tab)");
+      if (!token) {
+        router.push("/auth");
       }
     };
     fetchToken();
