@@ -141,7 +141,6 @@ const Bookmarks = () => {
   const { data, isLoading, isError, refetch } = useGetAllBookMarkQuery({
     type: activeTab,
   });
-  // console.log(data);
 
   return isLoading ? (
     <View style={tw`flex-1 justify-center items-center`}>
@@ -208,7 +207,7 @@ const Bookmarks = () => {
             />
             <Text style={tw`text-gray-700`}>
               {/* {tabs.find((t) => t.id === activeTab)?.count} */}
-              333
+              {data?.data?.total || 0}
             </Text>
           </View>
         </View>
