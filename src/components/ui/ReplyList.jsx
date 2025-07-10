@@ -3,13 +3,12 @@ import { View } from "react-native";
 import ReplyItem from "./ReplyItem";
 
 const ReplyList = ({ replies }) => {
+  // console.log("replies ,", replies);
+
   return (
-    <View style={tw`ml-12`}>
-      <View
-        style={tw`absolute -left-8 top-0 bottom-0 w-0.6 bg-primary rounded-b-lg`}
-      />
+    <View style={tw`ml-5`}>
       {replies.map((reply) => (
-        <ReplyItem key={reply.id} reply={reply} />
+        <ReplyItem key={reply?.id} reply={reply} />
       ))}
     </View>
   );
