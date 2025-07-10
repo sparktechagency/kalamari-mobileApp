@@ -1,5 +1,6 @@
 import { IconHeart, IconsListDeleted } from "@/assets/Icon";
 import tw from "@/src/lib/tailwind";
+import { makeImage } from "@/src/redux/api/baseApi";
 import {
   usePostCommentDeletedMutation,
   usePostLinkCountMutation,
@@ -9,7 +10,8 @@ import { SvgXml } from "react-native-svg";
 import ReplyInput from "./ReplyInput";
 import ReplyList from "./ReplyList";
 
-const DEFAULT_AVATAR = "https://randomuser.me/api/portraits/men/1.jpg";
+export const DEFAULT_AVATAR =
+  "https://i.ibb.co/4wdkdW62/403017-avatar-default-head-person-unknown-icon.png";
 
 const CommentItem = ({
   comment,
@@ -21,7 +23,7 @@ const CommentItem = ({
   handleOpenReplyContent,
   isLoading,
 }) => {
-  console.log(comment);
+  console.log("comment ---------", comment);
 
   const [commentLike] = usePostLinkCountMutation();
   const [deletedComment, { isLoading: deletedItem }] =
@@ -36,7 +38,7 @@ const CommentItem = ({
   };
 
   const handleDelete = (id) => {
-    console.log(id);
+    // console.log(id);
 
     Alert.alert(
       "Delete",
@@ -52,7 +54,7 @@ const CommentItem = ({
           onPress: async () => {
             try {
               const res = await deletedComment({ comment_id: id }).unwrap();
-              console.log(res);
+              // console.log(res);
             } catch (error) {
               console.log(error);
             }
@@ -69,16 +71,16 @@ const CommentItem = ({
   return comment ? (
     <View style={tw`flex-row gap-3 py-3`}>
       <Image
-        source={{ uri: DEFAULT_AVATAR }}
+        source={{ uri: makeImage(comment?.avatar) || DEFAULT_AVATAR }}
         style={tw`w-10 h-10 rounded-full`}
       />
 
       <View style={tw`flex-1`}>
         {/* Username and Delete */}
         <View style={tw`flex-row justify-between items-start`}>
-          <Text style={tw`font-inter-600`}>{comment.user_name}</Text>
+          <Text style={tw`font-inter-600`}>{comment?.user_name}</Text>
           <TouchableOpacity
-            onPress={() => handleDelete(comment.id)}
+            onPress={() => handleDelete(comment?.id)}
             activeOpacity={0.7}
           >
             <SvgXml xml={IconsListDeleted} />
@@ -87,26 +89,33 @@ const CommentItem = ({
 
         {/* Comment Text */}
         <Text style={tw`text-sm font-inter-400 text-gray-800 mt-1`}>
-          {comment.comment}
+          {comment?.comment}
         </Text>
 
         {/* Actions */}
         <View style={tw`flex-row items-center mt-2 gap-4`}>
-          <TouchableOpacity onPress={() => handleOpenReplyContent(comment.id)}>
+          <TouchableOpacity onPress={() => handleOpenReplyContent(comment?.id)}>
+            {/* <Text style={tw`text-xs text-gray-500`}>
+              {openReplies[comment.id] ? "Cancel" : `Reply `}
+            </Text> */}
             <Text style={tw`text-xs text-gray-500`}>
-              {openReplies[comment.id] ? "Cancel" : "Reply"}
+              {openReplies[comment.id]
+                ? "Cancel"
+                : `Reply ${
+                    comment?.replies?.length > 0 ? comment?.replies?.length : ""
+                  }`}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={tw`flex-row items-center`}
-            onPress={() => handleLike(comment.id)}
+            onPress={() => handleLike(comment?.id)}
           >
-            {comment.like > 0 ? (
+            {comment?.like > 0 ? (
               <>
                 <SvgXml xml={IconHeart} width={16} height={16} />
                 <Text style={tw`text-xs text-gray-500 ml-1`}>
-                  {comment.like}
+                  {comment?.like}
                 </Text>
               </>
             ) : (
@@ -116,9 +125,9 @@ const CommentItem = ({
         </View>
 
         {/* Reply Input */}
-        {openReplies[comment.id] && activeReplyId === comment.id && (
+        {openReplies[comment?.id] && (
           <ReplyInput
-            commentId={comment.id}
+            commentId={comment?.id}
             replyText={replyText}
             setReplyText={setReplyText}
             setActiveReplyId={setActiveReplyId}
@@ -126,8 +135,8 @@ const CommentItem = ({
         )}
 
         {/* Replies List */}
-        {openReplies[comment.id] && comment.replies?.length > 0 && (
-          <ReplyList replies={comment.replies} />
+        {openReplies[comment?.id] && comment?.replies?.length > 0 && (
+          <ReplyList replies={comment?.replies} />
         )}
       </View>
     </View>

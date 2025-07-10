@@ -1,7 +1,7 @@
 import { IconsBlue } from "@/assets/Icon";
 import tw from "@/src/lib/tailwind";
 import { useReplyCommentsMutation } from "@/src/redux/commentApi/commentApi";
-import { Image, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 const DEFAULT_AVATAR = "https://randomuser.me/api/portraits/men/1.jpg";
@@ -13,6 +13,8 @@ const ReplyInput = ({
   setActiveReplyId,
 }) => {
   const [replyComment, { isLoading }] = useReplyCommentsMutation();
+
+  // console.log("replyText ", setActiveReplyId);
 
   const handleReply = async () => {
     if (!replyText.trim()) return;
@@ -28,10 +30,10 @@ const ReplyInput = ({
 
   return (
     <View style={tw`mt-3 flex-row items-center`}>
-      <Image
+      {/* <Image
         source={{ uri: DEFAULT_AVATAR }}
         style={tw`w-6 h-6 rounded-full mr-2`}
-      />
+      /> */}
       <TextInput
         style={tw`flex-1 border border-gray-300 rounded-full px-3 py-1 text-sm font-inter-400`}
         placeholder="Write a reply..."

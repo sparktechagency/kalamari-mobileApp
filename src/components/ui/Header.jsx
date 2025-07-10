@@ -3,9 +3,19 @@ import { router, useNavigation } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
+import { makeImage } from "../../redux/api/baseApi";
+import { useGetProfileQuery } from "../../redux/apiSlices/authApiSlice";
+import { DEFAULT_AVATAR } from "./CommentItem";
 
 const Header = () => {
   const navigation = useNavigation();
+
+  const { data, isLoading, refetch } = useGetProfileQuery();
+  // console.log("header Data", data);
+
+  const imageUrl = makeImage(data?.data?.avatar);
+  // console.log(imageUrl);
+
   return (
     <View style={tw`flex-row justify-between items-center my-4 bg-[#FDFFFE]`}>
       {/* Left - Hamburger and Logo */}
@@ -49,7 +59,8 @@ const Header = () => {
           activeOpacity={0.7}
         >
           <Image
-            source={require("@/assets/images/image.png")}
+            // source={require("@/assets/images/image.png")}
+            source={{ uri: imageUrl || DEFAULT_AVATAR }}
             style={tw`w-8 h-8 rounded-full`}
           />
         </TouchableOpacity>

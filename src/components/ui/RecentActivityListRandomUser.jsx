@@ -1,5 +1,6 @@
 import { IconDelete, IconRestruernt, IconStar } from "@/assets/Icon";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import {
   Alert,
   FlatList,
@@ -9,16 +10,17 @@ import {
   View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
-import foodImage from "../../../assets/images/Recipes.png";
 import tw from "../../lib/tailwind";
-
-const DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+import { useGetMyAllPostQuery } from "../../redux/profileApi/profileApi";
+import SimplifyDate from "../../utils/SimplifyDate";
 
 const RecentActivityListRandomUser = () => {
-  const handleNavigate = () => {
-    // console.log("asdfg");
-    router.push(`/notifications/${1}`);
-  };
+  const { data, isLoading, refetch } = useGetMyAllPostQuery();
+  // console.log("RecentActivityListRandomUser ", data?.data?.data[0]?.id);
+
+  // const handleNavigate = () => {
+  //   // console.log("asdfg");
+  // };
 
   const handleDelete = (id) => {
     Alert.alert(
@@ -34,16 +36,23 @@ const RecentActivityListRandomUser = () => {
     );
   };
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   return (
     <View style={tw`flex-1`}>
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={DATA}
-        keyExtractor={(item, index) => index.toString()}
+        data={data?.data?.data}
+        keyExtractor={(index, item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
         renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={handleNavigate}>
+          <TouchableOpacity
+            onPress={() => router.push(`/notifications/${item?.id}`)}
+            key={item?.id}
+          >
             <View style={tw`flex-col my-2 justify-between items-center`}>
               <View
                 style={tw`flex-row bg-[#D5D5D51A] p-2 rounded-2xl items-center`}
@@ -56,7 +65,7 @@ const RecentActivityListRandomUser = () => {
                     {/* Title and Rating */}
                     <View style={tw`flex-row`}>
                       <Image
-                        source={foodImage}
+                        source={item?.photo[0]}
                         style={tw`w-18 h-18 rounded-[8px] mr-4`}
                       />
                       <View style={tw`flex-col justify-between`}>
@@ -64,14 +73,14 @@ const RecentActivityListRandomUser = () => {
                           <Text
                             style={tw`text-base font-inter-700 text-textPrimary`}
                           >
-                            Spaghetti Carbonara
+                            {item?.meal_name}
                           </Text>
                           <View style={tw`flex-row items-center mt-1`}>
                             <SvgXml xml={IconRestruernt} />
                             <Text
                               style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
                             >
-                              78 Tampa, Florida
+                              {item?.location}
                             </Text>
                           </View>
                         </View>
@@ -81,12 +90,12 @@ const RecentActivityListRandomUser = () => {
                           <Text
                             style={tw`text-[12px] font-inter-600 text-[#454545] mr-2`}
                           >
-                            Meal
+                            {item?.food_type}
                           </Text>
                           <Text
                             style={tw`text-[12px] font-inter-600 text-[#454545]`}
                           >
-                            Restaurant
+                            {item?.restaurant_name}
                           </Text>
                         </View>
                       </View>
@@ -98,7 +107,7 @@ const RecentActivityListRandomUser = () => {
                         {/* <FontAwesome name="star" size={16} color="#facc15" /> */}
                         <SvgXml xml={IconStar} />
                         <Text style={tw`ml-1 text-textPrimary font-inter-600`}>
-                          2.8
+                          {item?.rating}
                         </Text>
                       </View>
                       {/*  */}
@@ -106,7 +115,7 @@ const RecentActivityListRandomUser = () => {
                         <Text
                           style={tw`text-[#454545] font-inter-400 text-3 mt-1`}
                         >
-                          May 13th
+                          <SimplifyDate date={item?.created_at} />
                         </Text>
                       </View>
                       {/*  */}

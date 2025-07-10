@@ -23,7 +23,7 @@ const CommentSection = ({ data, isLoading }) => {
       contentContainerStyle={tw`pb-4`}
     >
       {data?.data?.[0]?.comments?.map((comment) => (
-        <View key={comment.id} style={tw`relative`}>
+        <View key={comment?.id} style={tw`relative`}>
           <CommentItem
             comment={comment}
             openReplies={openReplies}

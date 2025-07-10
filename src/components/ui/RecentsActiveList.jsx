@@ -4,23 +4,38 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import foodImage from "../../../assets/images/food-image.png";
 import tw from "../../lib/tailwind";
+import { useGetRandomuserUserPostQuery } from "../../redux/randomuserApi/randomuserApi";
+import { cardViewDate } from "../../utils/cardViewDate";
 
-const DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const RecentsActiveList = ({ user_id }) => {
+  // console.log(user_id);
 
-const RecentsActiveList = () => {
-  const handleNavigate = () => {
-    // console.log("asdfg");
-    router.push(`/notifications/${1}`);
-  };
+  const { data, isLoading, refreshing, onRefresh } =
+    useGetRandomuserUserPostQuery({
+      user_id: user_id,
+    });
+  // console.log("random user post ", data?.data?.data);
+
   return (
     <View style={tw``}>
       <FlatList
-        data={DATA}
-        keyExtractor={(item, index) => index.toString()}
+        data={data?.data?.data}
+        keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={handleNavigate}>
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={refreshing}
+        //     onRefresh={onRefresh}
+        //     colors={["#ED6237"]}
+        //     tintColor="#ED6237"
+        //   />
+        // }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item?.id}
+            onPress={() => router.push(`/notifications/${item?.id}`)}
+          >
             <View style={tw`flex-col my-2 justify-between items-center`}>
               <View
                 style={tw`flex-row bg-[#D5D5D51A] p-2 rounded-2xl items-center`}
@@ -41,14 +56,15 @@ const RecentsActiveList = () => {
                           <Text
                             style={tw`text-base font-inter-700 text-textPrimary`}
                           >
-                            Spaghetti Carbonara
+                            {item?.meal_name}
                           </Text>
+
                           <View style={tw`flex-row items-center mt-1`}>
-                            <SvgXml xml={IconRestruernt} />
+                            <SvgXml xml={item?.location && IconRestruernt} />
                             <Text
                               style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
                             >
-                              78 Tampa, Florida
+                              {item?.location || "UnKnown"}
                             </Text>
                           </View>
                         </View>
@@ -58,12 +74,12 @@ const RecentsActiveList = () => {
                           <Text
                             style={tw`text-[12px] font-inter-600 text-[#454545] mr-2`}
                           >
-                            Meal
+                            {item?.food_type}
                           </Text>
                           <Text
                             style={tw`text-[12px] font-inter-600 text-[#454545]`}
                           >
-                            Restaurant
+                            {item?.have_it}
                           </Text>
                         </View>
                       </View>
@@ -71,17 +87,21 @@ const RecentsActiveList = () => {
 
                     {/* Location and Date */}
                     <View style={tw`flex-col justify-between items-end `}>
-                      <View style={tw`flex-row items-center`}>
-                        {/* <FontAwesome name="star" size={16} color="#facc15" /> */}
-                        <SvgXml xml={IconStar} />
-                        <Text style={tw`ml-1 text-textPrimary font-inter-600`}>
-                          2.8
-                        </Text>
-                      </View>
+                      {item?.rating && (
+                        <View style={tw`flex-row items-center`}>
+                          {/* <FontAwesome name="star" size={16} color="#facc15" /> */}
+                          <SvgXml xml={IconStar} />
+                          <Text
+                            style={tw`ml-1 text-textPrimary font-inter-600`}
+                          >
+                            {item?.rating}
+                          </Text>
+                        </View>
+                      )}
                       <Text
                         style={tw`text-[#454545] font-inter-400 text-sm mt-1`}
                       >
-                        May 13th
+                        {cardViewDate(item?.created_at)}
                       </Text>
                     </View>
                   </View>

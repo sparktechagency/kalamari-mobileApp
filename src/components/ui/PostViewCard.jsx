@@ -337,10 +337,170 @@
 
 // export default React.memo(PostViewCard);
 
+// import { Entypo } from "@expo/vector-icons";
+// import { useState } from "react";
+// import { Image, Text, TouchableOpacity, View } from "react-native";
+// import { SvgXml } from "react-native-svg";
+
+// import {
+//   IconHeart,
+//   IconLOcation,
+//   IconLove,
+//   IconRestruernt,
+//   IconStar,
+//   IconVerify,
+// } from "@/assets/Icon";
+
+// import tw from "../../lib/tailwind";
+// import { usePostLikeMutation } from "../../redux/commentApi/commentApi";
+// import SimplifyDate from "../../utils/SimplifyDate";
+// import BookMark from "./BookMark";
+// import ButtomSheet from "./ButtomSheet";
+// import ShareButton from "./ShareButton";
+// import TacoSlider from "./TacoSlider";
+
+// const DEFAULT_AVATAR = "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png";
+
+// const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
+//   const [isHeart, setIsHeart] = useState(false);
+//   const [loveCount, setLoveCount] = useState(item?.love_reacts || 0);
+
+//   const safeDate = item?.created_at?.split(".")[0];
+//   const [postLike, { isLoading }] = usePostLikeMutation();
+
+//   // const { data } = useUserDiscoveryAllPostQuery();
+//   // console.log("----------------------------------------------------------");
+//   // console.log("new data", data?.data?.data);
+
+//   const handleHeart = async (postId) => {
+//     try {
+//       const res = await postLike({ post_id: postId }).unwrap();
+//       refetch();
+//       console.log("text heart", res);
+//     } catch (error) {
+//       console.error("Heart toggle failed:", error);
+//     }
+//   };
+
+//   return (
+//     <View style={tw`flex-1 my-3 py-2 flex-col gap-3`}>
+//       <View style={tw`flex-row items-center gap-2`}>
+//         <TouchableOpacity onPress={handleNavigate}>
+//           <Image
+//             style={tw`w-10 h-10 rounded-full`}
+//             source={{ uri: DEFAULT_AVATAR }}
+//           />
+//         </TouchableOpacity>
+
+//         <View style={tw`flex gap-0.5 flex-1`}>
+//           <View style={tw`flex-row items-center justify-between`}>
+//             <View style={tw`flex-row gap-3`}>
+//               <TouchableOpacity
+//                 onPress={handleNavigate}
+//                 style={tw`flex-row items-center gap-2`}
+//               >
+//                 <Text style={tw`text-3.5 font-inter-700 text-[#121212]`}>
+//                   {item?.user_name} id {item?.id}
+//                 </Text>
+//                 <SvgXml xml={IconVerify} />
+//               </TouchableOpacity>
+
+//               <View style={tw`flex-row gap-1 items-center`}>
+//                 {item?.tagged?.map((tag, index) => (
+//                   <Text
+//                     key={index}
+//                     style={tw`text-[12px] font-inter-700 text-[#454545]`}
+//                   >
+//                     #{tag}
+//                   </Text>
+//                 ))}
+//               </View>
+//             </View>
+
+//             <TouchableOpacity onPress={openModal}>
+//               <Entypo name="dots-three-vertical" size={16} color="black" />
+//             </TouchableOpacity>
+//           </View>
+
+//           <View style={tw`flex-row gap-2 items-center`}>
+//             <View style={tw`flex-row gap-1 items-center`}>
+//               <SvgXml xml={IconRestruernt} />
+//               <Text style={tw`text-3 font-inter-500 text-[#454545]`}>
+//                 {item?.restaurant_name || "Unknown"}
+//               </Text>
+//             </View>
+//             <View style={tw`flex-row gap-1 items-center`}>
+//               <SvgXml xml={IconLOcation} />
+//               <Text style={tw`text-3 font-inter-500 text-[#454545]`}>
+//                 {item?.location || "Unknown"}
+//               </Text>
+//             </View>
+//           </View>
+//         </View>
+//       </View>
+
+//       <TacoSlider images={item?.images} />
+
+//       <View style={tw`flex-row mr-[5%] items-center mt-3`}>
+//         <View style={tw`flex-row items-center gap-4`}>
+//           <View style={tw`flex-row items-center gap-1`}>
+//             <TouchableOpacity onPress={() => handleHeart(item?.id)}>
+//               <SvgXml xml={item?.isHeart ? IconHeart : IconLove} />
+//             </TouchableOpacity>
+
+//             <Text style={tw`text-[13px] font-inter-600 text-[#454545]`}>
+//               {item?.love_reacts}
+//             </Text>
+//           </View>
+
+//           <ButtomSheet item={item} />
+//           <ShareButton />
+//         </View>
+
+//         <View style={tw`ml-auto`}>
+//           <BookMark post={item} />
+//         </View>
+//       </View>
+
+//       <View style={tw`mt-2 gap-1.5`}>
+//         <View style={tw`flex-col gap-1`}>
+//           <View style={tw`flex-row justify-between items-center`}>
+//             <Text style={tw`text-4 font-inter-700 text-textPrimary`}>
+//               {item?.meal_name || item?.title || "Untitled"}
+//             </Text>
+//             <View style={tw`flex-row gap-1 items-center`}>
+//               <SvgXml xml={IconStar} />
+//               <Text style={tw`text-[16px] text-textPrimary font-inter-700`}>
+//                 {item?.rating || 0}
+//               </Text>
+//             </View>
+//           </View>
+
+//           <View style={tw`flex-row justify-between items-center`}>
+//             <Text style={tw`text-sm font-inter-600 text-[#454545] leading-5`}>
+//               {item?.have_it}
+//             </Text>
+//             <Text style={tw`text-[12px] font-inter-500 text-[#454545]`}>
+//               <SimplifyDate date={safeDate} />
+//             </Text>
+//           </View>
+//         </View>
+
+//         <Text style={tw`text-sm font-inter-400 text-[#454545] leading-5`}>
+//           {item?.description}
+//         </Text>
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default PostViewCard;
+
 import { Entypo } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
+import tw from "../../lib/tailwind";
 
 import {
   IconHeart,
@@ -351,56 +511,91 @@ import {
   IconVerify,
 } from "@/assets/Icon";
 
-import tw from "../../lib/tailwind";
 import { usePostLikeMutation } from "../../redux/commentApi/commentApi";
 import SimplifyDate from "../../utils/SimplifyDate";
+
+import { router } from "expo-router";
+import { makeImage } from "../../redux/api/baseApi";
+import { useGetProfileQuery } from "../../redux/apiSlices/authApiSlice";
 import BookMark from "./BookMark";
 import ButtomSheet from "./ButtomSheet";
+import { DEFAULT_AVATAR } from "./CommentItem";
+import ReportModal from "./ReportModal";
 import ShareButton from "./ShareButton";
 import TacoSlider from "./TacoSlider";
 
-const DEFAULT_AVATAR = "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png";
+const PostViewCard = ({ item, openModal, refetch }) => {
+  const [isLiked, setIsLiked] = useState(item?.isHeart ?? false);
+  const [loveCount, setLoveCount] = useState(item?.love_reacts ?? 0);
+  const { data } = useGetProfileQuery();
+  // console.log(item);
 
-const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
-  const [isHeart, setIsHeart] = useState(false);
-  const [loveCount, setLoveCount] = useState(item?.love_reacts || 0);
+  // const imageUrl = ;
+  // console.log("imageUrl", imageUrl);
 
-  const safeDate = item?.created_at?.split(".")[0];
-  const [postLike, { isLoading }] = usePostLikeMutation();
+  const [isVisible, setIsVisible] = useState(false);
+  // const openModal = () => {
+  //   setIsVisible(true);
+  // };
 
-  // const { data } = useUserDiscoveryAllPostQuery();
-  // console.log("----------------------------------------------------------");
-  // console.log("new data", data?.data?.data);
+  const safeDate = item?.created_at?.split(".")[0] || "";
+  const [postLike] = usePostLikeMutation();
 
+  const [userPostInfo, setuserPostInfo] = useState([]);
+
+  // console.log("userPostInfo , ", userPostInfo);
+
+  // love
   const handleHeart = async (postId) => {
     try {
-      const res = await postLike({ post_id: postId }).unwrap();
+      setIsLiked((prev) => !prev);
+      setLoveCount((prev) => (isLiked ? prev - 1 : prev + 1));
 
-      console.log("text heart", res);
+      const res = await postLike({ post_id: postId }).unwrap();
+      if (refetch) refetch();
     } catch (error) {
+      // Revert on error
+      setIsLiked((prev) => !prev);
+      setLoveCount((prev) => (isLiked ? prev + 1 : prev - 1));
       console.error("Heart toggle failed:", error);
     }
   };
 
+  const handleNavigate = (id) => {
+    if (data?.data?.id === id) {
+      router.push(`/Profile`);
+    } else {
+      router.push(`randomuser/${id}`);
+    }
+
+    // console.log(id);
+    // router.push(`randomuser/${id}`);
+  };
+
+  // console.log();
+
   return (
     <View style={tw`flex-1 my-3 py-2 flex-col gap-3`}>
+      {/* --- User Info Header --- */}
       <View style={tw`flex-row items-center gap-2`}>
-        <TouchableOpacity onPress={handleNavigate}>
+        <TouchableOpacity onPress={() => handleNavigate(item?.user_id)}>
           <Image
+            source={{
+              uri: makeImage(item?.avatar) || DEFAULT_AVATAR,
+            }}
             style={tw`w-10 h-10 rounded-full`}
-            source={{ uri: DEFAULT_AVATAR }}
           />
         </TouchableOpacity>
 
-        <View style={tw`flex gap-0.5 flex-1`}>
-          <View style={tw`flex-row items-center justify-between`}>
+        <View style={tw`flex-1 gap-0.5`}>
+          <View style={tw`flex-row justify-between items-center`}>
             <View style={tw`flex-row gap-3`}>
               <TouchableOpacity
-                onPress={handleNavigate}
+                onPress={() => handleNavigate(item?.user_id)}
                 style={tw`flex-row items-center gap-2`}
               >
                 <Text style={tw`text-3.5 font-inter-700 text-[#121212]`}>
-                  {item?.user_name} id {item?.id}
+                  {item?.user_name || "Unknown"} id {item?.user_id}
                 </Text>
                 <SvgXml xml={IconVerify} />
               </TouchableOpacity>
@@ -417,7 +612,12 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
               </View>
             </View>
 
-            <TouchableOpacity onPress={openModal}>
+            {/* user report modal  */}
+            <TouchableOpacity
+              onPress={() => {
+                return setIsVisible(!isVisible), setuserPostInfo(item);
+              }}
+            >
               <Entypo name="dots-three-vertical" size={16} color="black" />
             </TouchableOpacity>
           </View>
@@ -439,46 +639,50 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
         </View>
       </View>
 
-      <TacoSlider images={item?.images} />
+      {/* --- Image Carousel --- */}
+      <TacoSlider images={item?.photo} />
 
-      <View style={tw`flex-row mr-[5%] items-center mt-3`}>
+      {/* --- Reactions, Bookmark, Share --- */}
+      <View style={tw`flex-row items-center mt-3 mr-[5%]`}>
         <View style={tw`flex-row items-center gap-4`}>
           <View style={tw`flex-row items-center gap-1`}>
             <TouchableOpacity onPress={() => handleHeart(item?.id)}>
-              <SvgXml xml={item?.isHeart ? IconHeart : IconLove} />
+              <SvgXml xml={isLiked ? IconHeart : IconLove} />
             </TouchableOpacity>
-
             <Text style={tw`text-[13px] font-inter-600 text-[#454545]`}>
-              {/* {data?.data?.data.love_reacts} */}d33
+              {loveCount}
             </Text>
           </View>
-
           <ButtomSheet item={item} />
           <ShareButton />
         </View>
 
         <View style={tw`ml-auto`}>
-          <BookMark post={item} />
+          <BookMark post={item} refetch={refetch} />
         </View>
       </View>
 
+      {/* --- Title, Rating, Description --- */}
       <View style={tw`mt-2 gap-1.5`}>
         <View style={tw`flex-col gap-1`}>
           <View style={tw`flex-row justify-between items-center`}>
             <Text style={tw`text-4 font-inter-700 text-textPrimary`}>
               {item?.meal_name || item?.title || "Untitled"}
             </Text>
-            <View style={tw`flex-row gap-1 items-center`}>
-              <SvgXml xml={IconStar} />
-              <Text style={tw`text-[16px] text-textPrimary font-inter-700`}>
-                {item?.rating || 0}
-              </Text>
-            </View>
+
+            {item?.rating && (
+              <View style={tw`flex-row gap-1 items-center`}>
+                <SvgXml xml={IconStar} />
+                <Text style={tw`text-[16px] text-textPrimary font-inter-700`}>
+                  {item?.rating || 0}
+                </Text>
+              </View>
+            )}
           </View>
 
           <View style={tw`flex-row justify-between items-center`}>
             <Text style={tw`text-sm font-inter-600 text-[#454545] leading-5`}>
-              {item?.have_it}
+              {item?.have_it || ""}
             </Text>
             <Text style={tw`text-[12px] font-inter-500 text-[#454545]`}>
               <SimplifyDate date={safeDate} />
@@ -486,10 +690,18 @@ const PostViewCard = ({ item, openModal, handleNavigate, refetch }) => {
           </View>
         </View>
 
-        <Text style={tw`text-sm font-inter-400 text-[#454545] leading-5`}>
-          {item?.description}
-        </Text>
+        {item?.description ? (
+          <Text style={tw`text-sm font-inter-400 text-[#454545] leading-5`}>
+            {item?.description}
+          </Text>
+        ) : null}
       </View>
+
+      <ReportModal
+        isVisible={isVisible}
+        closeModal={() => setIsVisible(!isVisible)}
+        userPostInfo={userPostInfo}
+      />
     </View>
   );
 };
