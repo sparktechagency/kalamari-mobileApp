@@ -2,6 +2,7 @@
 import { IconRecents, Iconsfollower } from "@/assets/Icon";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
+import { useEffect } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import ProfileViewImage from "../../../components/ui/ProfileViewImage";
@@ -17,18 +18,30 @@ import {
 
 const Profile = () => {
   const { data: useData, isLoading, refetch } = useGetProfileQuery();
-  console.log("useData", useData);
+  // console.log("useData", useData);
 
-  const { data: getUserFollowing, isLoading: followingLoading } =
-    useGetUserFollowingQuery({
-      user_id: useData?.data?.id,
-    });
+  // useGetUserFollowingQuery
+  const {
+    data: getUserFollowing,
+    isLoading: followingLoading,
+    refetch: followingRefetch,
+    isFetching,
+  } = useGetUserFollowingQuery({
+    user_id: useData?.data?.id,
+  });
+
+  // useGetUserFolloweQuery
   const { data: getUserFollow, isLoading: followLoading } =
     useGetUserFolloweQuery({
       user_id: useData?.data?.id,
     });
 
-  console.log("getUserFollow : ", getUserFollow);
+  useEffect(() => {
+    followingRefetch();
+    refetch();
+  }, [followingRefetch, refetch]);
+
+  // console.log("getUserFollow : ", useData);
 
   return isLoading ? (
     <View style={tw`flex-1 justify-center items-center`}>
