@@ -40,12 +40,38 @@ const randomuserApi = api.injectEndpoints({
       }),
       providesTags: ["profile"],
     }),
+
+    getRandomuserUserPost: builder.query({
+      query: ({ user_id }) => ({
+        url: "/get-my-posts", // This should match your Laravel route
+        params: {
+          user_id,
+        },
+      }),
+      providesTags: ["profile"],
+    }),
+
+    //
+    getRandomAllBookMark: builder.query({
+      query: ({ type, user_id }) => ({
+        url: `/get-bookmarks`,
+        method: "GET",
+        params: {
+          type,
+          user_id,
+        },
+      }),
+      // Automatically refetch relevant queries after mutation
+      providesTags: ["bookmarks"],
+    }),
   }),
 });
 
 export const {
   useGetRandomuserUserQuery,
+  useGetRandomuserUserPostQuery,
   useGetUserRandomuserFollowingQuery,
   useGetUserRandomuserFolloweQuery,
+  useGetRandomAllBookMarkQuery,
   useGeRandomuserUserDiscoveryToggleFollowMutation,
 } = randomuserApi;
