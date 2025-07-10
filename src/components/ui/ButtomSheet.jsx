@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
+import { useGetProfileQuery } from "../../redux/apiSlices/authApiSlice.js";
 import {
   useGetUserCommentQuery,
   usePostLinkCountMutation,
@@ -23,6 +24,8 @@ import {
   useReplyCommentsMutation,
 } from "../../redux/commentApi/commentApi";
 
+import { makeImage } from "@/src/redux/api/baseApi";
+import { DEFAULT_AVATAR } from "./CommentItem";
 import CommentSection from "./CommentSection";
 
 const ButtomSheet = ({ item }) => {
@@ -83,6 +86,9 @@ const ButtomSheet = ({ item }) => {
     }
   };
 
+  const { data: userData } = useGetProfileQuery();
+  // console.log("userData ---", data?.data);
+
   return (
     <View>
       <TouchableOpacity onPress={openModal}>
@@ -126,7 +132,7 @@ const ButtomSheet = ({ item }) => {
               >
                 <Image
                   source={{
-                    uri: "https://randomuser.me/api/portraits/men/1.jpg",
+                    uri: makeImage(userData?.data?.avatar) || DEFAULT_AVATAR,
                   }}
                   style={tw`w-7 h-7 rounded-full mr-2`}
                 />
