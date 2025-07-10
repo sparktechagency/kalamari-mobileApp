@@ -60,7 +60,7 @@ export const api = createApi({
     "bookmarks",
     "profile",
     "randomuser",
-    "setting",
+    "report",
     "subscription",
   ],
 });
