@@ -164,7 +164,6 @@
 
 // export default TacoPostCard;
 
-import { Entypo } from "@expo/vector-icons";
 import {
   ActivityIndicator,
   Image,
@@ -204,8 +203,6 @@ const PostViewCard = () => {
   // console.log(data?.data);
   const [isLiked, setIsLiked] = useState(data?.data?.isHeart ?? false);
   const [loveCount, setLoveCount] = useState(data?.data?.love_reacts ?? 0);
-
-  const openModal = false;
 
   const safeDate = data?.data?.created_at?.split(".")[0] || "";
   const [postLike] = usePostLikeMutation();
@@ -265,7 +262,7 @@ const PostViewCard = () => {
                   style={tw`flex-row items-center gap-2`}
                 >
                   <Text style={tw`text-3.5 font-inter-700 text-[#121212]`}>
-                    {data?.data?.user_name || "Unknown"} id {data?.data?.id}
+                    {data?.data?.user_name || "Unknown"}
                   </Text>
                   <SvgXml xml={IconVerify} />
                 </TouchableOpacity>
@@ -281,10 +278,10 @@ const PostViewCard = () => {
                   ))}
                 </View>
               </View>
-
+              {/* 
               <TouchableOpacity onPress={openModal}>
                 <Entypo name="dots-three-vertical" size={16} color="black" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View style={tw`flex-row gap-2 items-center`}>
