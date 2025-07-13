@@ -79,6 +79,16 @@ export const profileApi = api.injectEndpoints({
       }),
       providesTags: ["profile"],
     }),
+    deletedRecentPost: builder.mutation({
+      query: ({ post_id }) => ({
+        url: "/delete-recent", // This should match your Laravel route
+        method: "DELETE",
+        params: {
+          post_id,
+        },
+      }),
+      invalidatesTags: ["profile"],
+    }),
   }),
 });
 
@@ -92,4 +102,5 @@ export const {
   useUpdateUserProfileMutation,
   useUserBlockProfileMutation,
   useUserReportPostMutation,
+  useDeletedRecentPostMutation,
 } = profileApi;
