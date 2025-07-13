@@ -373,7 +373,7 @@ const RandomUser = () => {
   };
 
   const openSheet = useCallback(() => {
-    bottomSheetRef.current?.snapToIndex(0);
+    bottomSheetRef.current?.expand(); // or .present()
   }, []);
 
   const handleViewMode = (name) => {

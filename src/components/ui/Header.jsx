@@ -1,10 +1,12 @@
 import { IconMap, IconMenu, IconNotifi, IconSearch } from "@/assets/Icon";
 import { router, useNavigation } from "expo-router";
+import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
 import { makeImage } from "../../redux/api/baseApi";
 import { useGetProfileQuery } from "../../redux/apiSlices/authApiSlice";
+import { useGetAllNotificationQuery } from "../../redux/notificationApi/notificationApi";
 import { DEFAULT_AVATAR } from "./CommentItem";
 
 const Header = () => {
@@ -15,6 +17,21 @@ const Header = () => {
 
   const imageUrl = makeImage(data?.data?.avatar);
   // console.log(imageUrl);
+
+  const { data: allNotification, isLoading: loadingNotification } =
+    useGetAllNotificationQuery();
+  console.log(allNotification?.data?.total);
+  const [clicked, setClicked] = useState(false);
+
+  const handlePress = () => {
+    if (!clicked) {
+      // console.log(clicked);
+
+      setClicked(true); // only once
+    }
+
+    router.push("/notifications");
+  };
 
   return (
     <View style={tw`flex-row justify-between items-center my-4 bg-[#FDFFFE]`}>
@@ -47,11 +64,23 @@ const Header = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => router.push("/notifications")}
-          style={tw`p-2 rounded-full bg-[#3333331A]`}
+          onPress={handlePress}
+          style={tw`p-2 rounded-full bg-[#3333331A] relative`}
           activeOpacity={0.7}
         >
           <SvgXml xml={IconNotifi} width={20} height={20} />
+
+          {allNotification?.data?.total > 0 && (
+            <View
+              style={tw`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-600 rounded-full justify-center items-center`}
+            >
+              <Text style={tw`text-white text-xs font-bold`}>
+                {allNotification?.data?.total > 99
+                  ? "99+"
+                  : allNotification?.data?.total}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity

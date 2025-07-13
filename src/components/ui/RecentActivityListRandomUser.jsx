@@ -11,16 +11,17 @@ import {
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
-import { useGetMyAllPostQuery } from "../../redux/profileApi/profileApi";
+import {
+  useDeletedRecentPostMutation,
+  useGetMyAllPostQuery,
+} from "../../redux/profileApi/profileApi";
 import SimplifyDate from "../../utils/SimplifyDate";
 
 const RecentActivityListRandomUser = () => {
   const { data, isLoading, refetch } = useGetMyAllPostQuery();
   // console.log("RecentActivityListRandomUser ", data?.data?.data[0]?.id);
-
-  // const handleNavigate = () => {
-  //   // console.log("asdfg");
-  // };
+  const [deleteRecent, { isLoading: deleteLoading }] =
+    useDeletedRecentPostMutation();
 
   const handleDelete = (id) => {
     Alert.alert(
@@ -31,6 +32,15 @@ const RecentActivityListRandomUser = () => {
         {
           text: "Delete",
           style: "destructive",
+          onPress: async () => {
+            // console.log(id);
+            try {
+              await deleteRecent({ post_id: id }).unwrap();
+              // console.log(res);
+            } catch (error) {
+              console.log(error);
+            }
+          },
         },
       ]
     );
@@ -45,10 +55,10 @@ const RecentActivityListRandomUser = () => {
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
         data={data?.data?.data}
-        keyExtractor={(index, item) => item?.id?.toString()}
+        keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => router.push(`/notifications/${item?.id}`)}
             key={item?.id}

@@ -21,7 +21,7 @@ const RandomUserProfile = ({ randomUser, id }) => {
       user_id: id,
     });
 
-  // console.log("randomUserFollowe ", randomUser?.data?.avatar);
+  // console.log("randomUserFollowe ", makeImage(randomUser?.data?.avatar));
 
   return (
     <View style={tw`px-2`}>

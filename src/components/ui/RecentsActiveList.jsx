@@ -2,8 +2,8 @@ import { IconRestruernt, IconStar } from "@/assets/Icon";
 import { router } from "expo-router";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import foodImage from "../../../assets/images/food-image.png";
 import tw from "../../lib/tailwind";
+import { makeImage } from "../../redux/api/baseApi";
 import { useGetRandomuserUserPostQuery } from "../../redux/randomuserApi/randomuserApi";
 import { cardViewDate } from "../../utils/cardViewDate";
 
@@ -14,7 +14,7 @@ const RecentsActiveList = ({ user_id }) => {
     useGetRandomuserUserPostQuery({
       user_id: user_id,
     });
-  // console.log("random user post ", data?.data?.data);
+  console.log("random user post ", data?.data?.data);
 
   return (
     <View style={tw``}>
@@ -48,10 +48,15 @@ const RecentsActiveList = ({ user_id }) => {
                     {/* Title and Rating */}
                     <View style={tw`flex-row`}>
                       <Image
-                        source={foodImage}
+                        // source={foodImage}
+                        source={{ uri: makeImage(item?.photo[0]) }}
                         style={tw`w-18 h-18 rounded-[8px] mr-4`}
                       />
-                      <View style={tw`flex-col justify-between`}>
+                      <View
+                        style={tw`flex-col  ${
+                          item?.location ? " justify-between" : "justify-start"
+                        }   `}
+                      >
                         <View style={tw`flex-col justify-between`}>
                           <Text
                             style={tw`text-base font-inter-700 text-textPrimary`}
@@ -61,11 +66,13 @@ const RecentsActiveList = ({ user_id }) => {
 
                           <View style={tw`flex-row items-center mt-1`}>
                             <SvgXml xml={item?.location && IconRestruernt} />
-                            <Text
-                              style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
-                            >
-                              {item?.location || "UnKnown"}
-                            </Text>
+                            {item?.location && (
+                              <Text
+                                style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
+                              >
+                                {item?.location || "UnKnown"}
+                              </Text>
+                            )}
                           </View>
                         </View>
 

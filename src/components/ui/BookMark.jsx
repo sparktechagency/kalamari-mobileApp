@@ -20,7 +20,13 @@ const BookMark = ({ post, refetch }) => {
       setIsBookmarked((prev) => !prev);
 
       const res = await toggleBookmark({ post_id: post?.id, type }).unwrap();
-      console.log(res);
+      // console.log(res);
+      if (res?.isBookmark) {
+        Alert.alert(
+          "Bookmark Saved",
+          "This post has been added to your  list."
+        );
+      }
 
       if (refetch) refetch();
     } catch (error) {
