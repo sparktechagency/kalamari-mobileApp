@@ -5,11 +5,36 @@ const notificationApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllNotification: builder.query({
       query: () => ({
-        url: "/get-notifications",
+        url: "/notification-stats",
       }),
+      providesTags: ["notification"],
     }),
-    providesTags: ["notification"],
+    getNotificationBySingleUser: builder.query({
+      query: ({ user_id }) => ({
+        url: `get-notifications?user_id=${user_id}`,
+      }),
+      providesTags: ["notification"],
+    }),
+    notificationRead: builder.mutation({
+      query: ({ notification_id }) => ({
+        url: `/read?notification_id=${notification_id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["notification"],
+    }),
+    notificationReadAll: builder.mutation({
+      query: () => ({
+        url: `/read-all`,
+        method: "POST",
+      }),
+      invalidatesTags: ["notification"],
+    }),
   }),
 });
 
-export const { useGetAllNotificationQuery } = notificationApi;
+export const {
+  useGetAllNotificationQuery,
+  useGetNotificationBySingleUserQuery,
+  useNotificationReadMutation,
+  useNotificationReadAllMutation,
+} = notificationApi;
