@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -36,11 +37,33 @@ const Post = () => {
 
   const [createPost, { isLoading }] = useCreatePostMutation();
 
-  // console.log("selectedLocation", selectedLocation);
-
   const uniqueTags = convertToUniqueTagArrays(tags); // [["Alex"], ["Mia"]]
 
   const handleSubmit = async () => {
+    // Common fields check (for both Restaurant & Homemade)
+    const isMissingCommonFields =
+      !mealName.trim() ||
+      !description.trim() ||
+      !selectedOptionFood ||
+      image.length === 0;
+
+    // Restaurant-specific check
+    const isMissingRestaurantFields =
+      selectedOption === 1 &&
+      (isMissingCommonFields || !restaurant.trim() || !rating);
+
+    // Homemade-specific check
+    const isMissingHomeMadeFields =
+      selectedOption === 2 && (isMissingCommonFields || !rating); // if rating is required for homemade too
+
+    if (isMissingRestaurantFields || isMissingHomeMadeFields) {
+      Alert.alert(
+        "Missing Information",
+        "Please complete all required fields before submitting."
+      );
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("meal_name", mealName);
