@@ -21,7 +21,7 @@ import { cardViewDate } from "../../utils/cardViewDate";
 const MyList = ({ isLoading, data }) => {
   //   const bottomSheetRef = useRef();
 
-  // console.log(Data);
+  console.log("MyList", data);
 
   const [deletedPost] = useDeletedBookMarkSinglePostMutation();
 
@@ -62,7 +62,7 @@ const MyList = ({ isLoading, data }) => {
     <View style={tw`flex-1`}>
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={data?.data?.data}
+        data={data}
         keyExtractor={(item) => item?.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
