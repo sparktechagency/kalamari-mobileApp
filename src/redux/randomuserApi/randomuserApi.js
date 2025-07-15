@@ -42,10 +42,12 @@ const randomuserApi = api.injectEndpoints({
     }),
 
     getRandomuserUserPost: builder.query({
-      query: ({ user_id }) => ({
-        url: "/get-my-posts", // This should match your Laravel route
+      query: ({ user_id, page, perPage = 10 } = {}) => ({
+        url: "/get-my-posts",
         params: {
           user_id,
+          page,
+          per_page: perPage,
         },
       }),
       providesTags: ["profile"],
@@ -70,6 +72,7 @@ const randomuserApi = api.injectEndpoints({
 export const {
   useGetRandomuserUserQuery,
   useGetRandomuserUserPostQuery,
+  useLazyGetRandomuserUserPostQuery,
   useGetUserRandomuserFollowingQuery,
   useGetUserRandomuserFolloweQuery,
   useGetRandomAllBookMarkQuery,
