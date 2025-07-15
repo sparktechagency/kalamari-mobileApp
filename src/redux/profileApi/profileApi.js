@@ -73,9 +73,13 @@ export const profileApi = api.injectEndpoints({
       providesTags: ["profile"],
     }),
     getMyAllPost: builder.query({
-      query: () => ({
+      query: ({ page, perPage = 10 } = {}) => ({
         url: "/get-my-posts", // This should match your Laravel route
         method: "GET",
+        params: {
+          page,
+          per_page: perPage,
+        },
       }),
       providesTags: ["profile"],
     }),
@@ -89,6 +93,12 @@ export const profileApi = api.injectEndpoints({
       }),
       invalidatesTags: ["profile"],
     }),
+    tagFollowing: builder.query({
+      query: () => ({
+        url: "/get-following", // This should match your Laravel route
+      }),
+      providesTags: ["profile"],
+    }),
   }),
 });
 
@@ -99,6 +109,8 @@ export const {
   useGetUserAllFollowingQuery,
   useGetUserAllFolloweQuery,
   useGetMyAllPostQuery,
+  useLazyGetMyAllPostQuery,
+  useTagFollowingQuery,
   useUpdateUserProfileMutation,
   useUserBlockProfileMutation,
   useUserReportPostMutation,
