@@ -13,9 +13,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.1.6",
-    "@kolking/react-native-rating": "^1.4.1",
     "@mapbox/polyline": "^1.2.1",
-    "@react-native-community/checkbox": "^0.5.20",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/drawer": "^7.3.11",
     "@react-navigation/elements": "^2.3.8",
