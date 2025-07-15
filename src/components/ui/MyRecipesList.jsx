@@ -67,7 +67,7 @@ const MyRecipesList = ({ isLoading, data }) => {
     <View style={tw`flex-1`}>
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={data?.data?.data}
+        data={data}
         keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
