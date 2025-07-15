@@ -1,42 +1,158 @@
-import { IconDelete, IconRestruernt, IconStar } from "@/assets/Icon";
-import { router } from "expo-router";
-import { useEffect } from "react";
+// import { useEffect, useState } from "react";
+// import { ActivityIndicator, Alert, View } from "react-native";
+// import tw from "../../lib/tailwind";
+// import {
+//   useDeletedRecentPostMutation,
+//   useLazyGetUserAllFollowingQuery,
+// } from "../../redux/profileApi/profileApi";
+
+// const RecentActivityListRandomUser = () => {
+//   // console.log("RecentActivityListRandomUser ", data?.data?.data[0]?.id);
+
+//   // Tracks whether the FlatList is currently being refreshed via pull-to-refresh
+//   const [refreshing, setRefreshing] = useState(false);
+
+//   // Tracks the current page number for pagination
+//   const [page, setPage] = useState(1);
+
+//   // Indicates whether a "load more" request is currently in progress (when scrolling to bottom)
+//   const [loadingMore, setLoadingMore] = useState(false);
+
+//   // Stores the list of posts fetched from the API
+//   const [posts, setPosts] = useState([]);
+
+//   // Initializes the RTK Query lazy fetch hook
+//   const [fetchPosts, { isLoading, isFetching, refetch }] =
+//     useLazyGetUserAllFollowingQuery();
+
+//   const [deleteRecent, { isLoading: deleteLoading }] =
+//     useDeletedRecentPostMutation();
+
+//   const handleDelete = (id) => {
+//     Alert.alert(
+//       "Delete Resents",
+//       "Are you sure you want to delete this Recents?",
+//       [
+//         { text: "Cancel", style: "cancel" },
+//         {
+//           text: "Delete",
+//           style: "destructive",
+//           onPress: async () => {
+//             // console.log(id);
+//             try {
+//               await deleteRecent({ post_id: id }).unwrap();
+//               // console.log(res);
+//             } catch (error) {
+//               console.log(error);
+//             }
+//           },
+//         },
+//       ]
+//     );
+//   };
+
+//   useEffect(() => {
+//     refetch();
+//   }, [refetch]);
+
+//   console.log(fetchPosts);
+
+//   return isLoading ? (
+//     <View style={tw`flex-1 justify-center items-center`}>
+//       <ActivityIndicator size="large" color="#F97316" />
+//     </View>
+//   ) : (
+//     <View style={tw`flex-1`}>
+//       {/* when the api changes ScrollView and adds flatList  */}
+//       <FlatList
+//         data={data?.data?.data}
+//         keyExtractor={(item) => item?.id?.toString()}
+//         showsVerticalScrollIndicator={false}
+//         contentContainerStyle={tw`pb-6`}
+//         renderItem={({ item }) => (
+//           <ProfileRanderItem handleDelete={handleDelete} item={item} />
+//         )}
+//       />
+//     </View>
+//   );
+// };
+
+// export default RecentActivityListRandomUser;
+
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
-  Image,
+  RefreshControl,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
 import {
   useDeletedRecentPostMutation,
-  useGetMyAllPostQuery,
+  useLazyGetMyAllPostQuery,
 } from "../../redux/profileApi/profileApi";
-import SimplifyDate from "../../utils/SimplifyDate";
+import ProfileRanderItem from "./ProfileRanderItem"; // assuming you have this component
 
 const RecentActivityListRandomUser = () => {
-  const { data, isLoading, refetch } = useGetMyAllPostQuery();
-  // console.log("RecentActivityListRandomUser ", data?.data?.data[0]?.id);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [hasMore, setHasMore] = useState(true); // to control if more data is available
+
+  const [fetchPosts, { isLoading }] = useLazyGetMyAllPostQuery();
   const [deleteRecent, { isLoading: deleteLoading }] =
     useDeletedRecentPostMutation();
 
+  const loadPosts = async (pageNum = 1, isRefresh = false) => {
+    try {
+      const res = await fetchPosts({ page: pageNum }).unwrap();
+
+      const newPosts = res?.data?.data || [];
+
+      if (isRefresh) {
+        setPosts(newPosts);
+      } else {
+        setPosts((prev) => [...prev, ...newPosts]);
+      }
+
+      setHasMore(res?.data?.current_page < res?.data?.last_page);
+      setPage(res?.data?.current_page + 1);
+    } catch (err) {
+      console.log("Fetch Error:", err);
+    } finally {
+      setRefreshing(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadPosts(1, true);
+  };
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore) {
+      setLoadingMore(true);
+      loadPosts(page);
+    }
+  };
+
   const handleDelete = (id) => {
     Alert.alert(
-      "Delete Resents",
-      "Are you sure you want to delete this Recents?",
+      "Delete Recents",
+      "Are you sure you want to delete this Recent?",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            // console.log(id);
             try {
               await deleteRecent({ post_id: id }).unwrap();
-              // console.log(res);
+              setPosts((prev) => prev.filter((item) => item.id !== id));
             } catch (error) {
               console.log(error);
             }
@@ -47,99 +163,44 @@ const RecentActivityListRandomUser = () => {
   };
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    loadPosts();
+  }, []);
 
-  return (
+  return isLoading && posts.length === 0 ? (
+    <View style={tw`flex-1 justify-center items-center`}>
+      <ActivityIndicator size="large" color="#F97316" />
+    </View>
+  ) : (
     <View style={tw`flex-1`}>
-      {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={data?.data?.data}
+        data={posts}
         keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={["#F97316"]}
+            tintColor="#F97316"
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator size="small" color="#F97316" style={tw`my-4`} />
+          ) : null
+        }
+        ListEmptyComponent={
+          !isLoading && posts.length === 0 ? (
+            <Text style={tw`text-center mt-10 text-gray-500`}>
+              No recent activity found.
+            </Text>
+          ) : null
+        }
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/notifications/${item?.id}`)}
-            key={item?.id}
-          >
-            <View style={tw`flex-col my-2 justify-between items-center`}>
-              <View
-                style={tw`flex-row bg-[#D5D5D51A] p-2 rounded-2xl items-center`}
-              >
-                {/* Image */}
-
-                {/* Content */}
-                <View style={tw`flex-1`}>
-                  <View style={tw`flex-row justify-between items-start`}>
-                    {/* Title and Rating */}
-                    <View style={tw`flex-row`}>
-                      <Image
-                        source={item?.photo[0]}
-                        style={tw`w-18 h-18 rounded-[8px] mr-4`}
-                      />
-                      <View style={tw`flex-col justify-between`}>
-                        <View style={tw`flex-col justify-between`}>
-                          <Text
-                            style={tw`text-base font-inter-700 text-textPrimary`}
-                          >
-                            {item?.meal_name}
-                          </Text>
-                          <View style={tw`flex-row items-center mt-1`}>
-                            <SvgXml xml={IconRestruernt} />
-                            <Text
-                              style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
-                            >
-                              {item?.location}
-                            </Text>
-                          </View>
-                        </View>
-
-                        {/* Tags */}
-                        <View style={tw`flex-row `}>
-                          <Text
-                            style={tw`text-[12px] font-inter-600 text-[#454545] mr-2`}
-                          >
-                            {item?.food_type}
-                          </Text>
-                          <Text
-                            style={tw`text-[12px] font-inter-600 text-[#454545]`}
-                          >
-                            {item?.restaurant_name}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* Location and Date */}
-                    <View style={tw`flex-col justify-between items-end gap-1 `}>
-                      <View style={tw`flex-row items-center`}>
-                        {/* <FontAwesome name="star" size={16} color="#facc15" /> */}
-                        <SvgXml xml={IconStar} />
-                        <Text style={tw`ml-1 text-textPrimary font-inter-600`}>
-                          {item?.rating}
-                        </Text>
-                      </View>
-                      {/*  */}
-                      <View>
-                        <Text
-                          style={tw`text-[#454545] font-inter-400 text-3 mt-1`}
-                        >
-                          <SimplifyDate date={item?.created_at} />
-                        </Text>
-                      </View>
-                      {/*  */}
-                      <View>
-                        <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                          <SvgXml xml={IconDelete} width={20} height={20} />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
+          <ProfileRanderItem handleDelete={handleDelete} item={item} />
         )}
       />
     </View>
