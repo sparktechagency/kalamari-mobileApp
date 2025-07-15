@@ -16,27 +16,22 @@ import { cardViewDate } from "../../utils/cardViewDate";
 
 const RecipesActivityList = ({ id }) => {
   const { data, refetch, isLoading } = useGetRandomAllBookMarkQuery({
-    type: 1,
+    type: 2,
     user_id: id,
   });
 
-  // console.log(data?.data?.data);
-
-  // const handleNavigate = () => {
-  //   // console.log("asdfg");
-  //   ;
-  // };
+  console.log(data);
 
   // ---------------------------------------------------------
   return isLoading ? (
     <View style={tw`flex-1 justify-center items-center`}>
-      <ActivityIndicator size="large" color="#F97316" />
+      <ActivityIndicator size="large" color="#ED6237" />
     </View>
   ) : (
     <View style={tw`flex-1`}>
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={data?.data?.data}
+        data={data?.data}
         keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
@@ -74,13 +69,6 @@ const RecipesActivityList = ({ id }) => {
                     <View
                       style={tw`flex-col gap-1.2 mt-1 justify-between items-end`}
                     >
-                      {/* <View style={tw`flex-row items-center`}>
-                        <FontAwesome name="star" size={16} color="#facc15" />
-                        <Text style={tw`ml-1 text-textPrimary font-inter-600 `}>
-                          2.8
-                        </Text>
-                      </View> */}
-
                       <Text style={tw`text-[#454545] font-inter-400 text-sm`}>
                         {cardViewDate(item?.created_at)}
                       </Text>

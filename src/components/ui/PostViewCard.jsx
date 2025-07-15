@@ -595,7 +595,7 @@ const PostViewCard = ({ item, openModal, refetch }) => {
                 style={tw`flex-row items-center gap-2`}
               >
                 <Text style={tw`text-3.5 font-inter-700 text-[#121212]`}>
-                  {item?.user_name || "Unknown"} id {item?.user_id}
+                  {item?.user_name || "Unknown"}
                 </Text>
                 <SvgXml xml={IconVerify} />
               </TouchableOpacity>

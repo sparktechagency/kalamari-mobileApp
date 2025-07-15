@@ -21,8 +21,6 @@ import { cardViewDate } from "../../utils/cardViewDate";
 const MyList = ({ isLoading, data }) => {
   //   const bottomSheetRef = useRef();
 
-  console.log("MyList", data);
-
   const [deletedPost] = useDeletedBookMarkSinglePostMutation();
 
   const handleDelete = (id, type) => {

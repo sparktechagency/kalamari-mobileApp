@@ -11,6 +11,8 @@ import { DEFAULT_AVATAR } from "./CommentItem";
 
 const Header = () => {
   const navigation = useNavigation();
+  const [userId, setUserId] = useState([]);
+  const [clicked, setClicked] = useState(false);
 
   const { data, isLoading, refetch } = useGetProfileQuery();
   // console.log("header Data", data);
@@ -20,8 +22,10 @@ const Header = () => {
 
   const { data: allNotification, isLoading: loadingNotification } =
     useGetAllNotificationQuery();
-  console.log(allNotification?.data?.total);
-  const [clicked, setClicked] = useState(false);
+
+  // console.log(id);
+
+  console.log(allNotification?.unread_count);
 
   const handlePress = () => {
     if (!clicked) {
@@ -70,14 +74,14 @@ const Header = () => {
         >
           <SvgXml xml={IconNotifi} width={20} height={20} />
 
-          {allNotification?.data?.total > 0 && (
+          {allNotification?.unread_count > 0 && (
             <View
               style={tw`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-600 rounded-full justify-center items-center`}
             >
               <Text style={tw`text-white text-xs font-bold`}>
-                {allNotification?.data?.total > 99
+                {allNotification?.unread_count > 99
                   ? "99+"
-                  : allNotification?.data?.total}
+                  : allNotification?.unread_count}
               </Text>
             </View>
           )}

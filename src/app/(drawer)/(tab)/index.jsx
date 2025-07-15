@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
 
+// import * as Contacts from "expo-contacts";
 import { router } from "expo-router";
 import Header from "../../../components/ui/Header";
 import UserPost from "../../../components/ui/UserPost";
@@ -19,6 +20,22 @@ const Home = () => {
     };
     fetchToken();
   }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Contacts.requestPermissionsAsync();
+  //     if (status === "granted") {
+  //       const { data } = await Contacts.getContactsAsync({
+  //         fields: [Contacts.Fields.Emails],
+  //       });
+
+  //       if (data.length > 0) {
+  //         const contact = data[0];
+  //         console.log(contact);
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
   const [isActiveTab, setIsActiveTab] = useState("Following");
 

@@ -151,28 +151,33 @@ const TacoSlider = ({ images = [] }) => {
       />
 
       {/* Left Arrow */}
-      <TouchableOpacity
-        onPress={() => scrollToIndex(currentIndex - 1)}
-        disabled={currentIndex === 0}
-        style={[
-          tw`absolute left-2 top-1/2 -mt-4 bg-[#E2E2E2] p-2 rounded-full`,
-          { opacity: currentIndex === 0 ? 0.4 : 1 },
-        ]}
-      >
-        <MaterialIcons name="keyboard-arrow-left" size={26} color="black" />
-      </TouchableOpacity>
+
+      {imageUrls?.length > 1 && (
+        <TouchableOpacity
+          onPress={() => scrollToIndex(currentIndex - 1)}
+          disabled={currentIndex === 0}
+          style={[
+            tw`absolute left-2 top-1/2 -mt-4 bg-[#E2E2E2] p-1 rounded-full`,
+            { opacity: currentIndex === 0 ? 0.5 : 1 },
+          ]}
+        >
+          <MaterialIcons name="keyboard-arrow-left" size={26} color="black" />
+        </TouchableOpacity>
+      )}
 
       {/* Right Arrow */}
-      <TouchableOpacity
-        onPress={() => scrollToIndex(currentIndex + 1)}
-        disabled={currentIndex === imageUrls?.length - 1}
-        style={[
-          tw`absolute right-2 top-1/2 -mt-4 bg-[#E2E2E2] p-2 rounded-full`,
-          { opacity: currentIndex === imageUrls?.length - 1 ? 0.4 : 1 },
-        ]}
-      >
-        <MaterialIcons name="keyboard-arrow-right" size={26} color="black" />
-      </TouchableOpacity>
+      {imageUrls?.length > 1 && (
+        <TouchableOpacity
+          onPress={() => scrollToIndex(currentIndex + 1)}
+          disabled={currentIndex === imageUrls?.length - 1}
+          style={[
+            tw`absolute right-2 top-1/2 -mt-4 bg-[#E2E2E2] p-1 rounded-full`,
+            { opacity: currentIndex === 0 ? 0.5 : 1 },
+          ]}
+        >
+          <MaterialIcons name="keyboard-arrow-right" size={26} color="black" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -11,7 +11,9 @@ import {
   View,
 } from "react-native";
 import { useDebounce } from "use-debounce";
+import { DEFAULT_AVATAR } from "../../components/ui/CommentItem";
 import tw from "../../lib/tailwind";
+import { makeImage } from "../../redux/api/baseApi";
 import { useSearchUserQuery } from "../../redux/homeApi/homeApi";
 
 const Search = () => {
@@ -41,6 +43,8 @@ const Search = () => {
   // - and the user has typed something (search is not empty)
   const showNoResults = !showLoading && !hasResults && debouncedSearch.trim();
 
+  console.log("search user ", data);
+
   const renderUserItem = ({ item: user }) => (
     <TouchableOpacity
       onPress={() => router.push(`/randomuser/${user?.id}`)}
@@ -49,14 +53,12 @@ const Search = () => {
       <View style={tw`flex-row flex-1 items-center`}>
         <Image
           source={{
-            uri: user?.avatar || "https://i.ibb.co/hFKjJHpC/Ellipse-4-1.png",
+            uri: makeImage(user?.avatar) || DEFAULT_AVATAR,
           }}
           style={tw`w-10 h-10 rounded-full mr-3`}
         />
         <View style={tw`flex-1`}>
-          <Text style={tw`font-bold text-textPrimary`}>
-            {user?.name || "Unnamed"}
-          </Text>
+          <Text style={tw`font-bold text-textPrimary`}>{user?.name}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -75,7 +77,7 @@ const Search = () => {
       {/* Search Input */}
       <View style={tw`mb-6`}>
         <View
-          style={tw`flex-row items-center bg-[#F3F3F3] rounded-4 px-4 py-2`}
+          style={tw`flex-row items-center bg-[#F3F3F3] rounded-4 px-4 py-1`}
         >
           <Fontisto name="search" size={20} color="#888888" style={tw`mr-2`} />
           <TextInput
@@ -86,6 +88,7 @@ const Search = () => {
             placeholderTextColor="#888"
             clearButtonMode="while-editing"
             returnKeyType="search"
+            selectionColor={"#888"}
           />
         </View>
       </View>

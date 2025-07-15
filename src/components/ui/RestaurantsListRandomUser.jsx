@@ -1,14 +1,7 @@
 import { IconRestruernt, IconStar } from "@/assets/Icon";
 import { router } from "expo-router";
 import { useEffect } from "react";
-import {
-  Alert,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import tw from "../../lib/tailwind";
 import { useGetRandomAllBookMarkQuery } from "../../redux/randomuserApi/randomuserApi";
@@ -22,29 +15,17 @@ const RestaurantsListRandomUser = ({ id }) => {
     user_id: id,
   });
 
-  const handleDelete = (id) => {
-    Alert.alert(
-      "Delete Resents",
-      "Are you sure you want to delete this Recents?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-        },
-      ]
-    );
-  };
-
   useEffect(() => {
     refetch();
   }, [refetch]);
+
+  // console.log(data); // working
 
   return (
     <View style={tw`flex-1`}>
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
-        data={data?.data?.data}
+        data={data}
         keyExtractor={(index, item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}

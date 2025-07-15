@@ -1,122 +1,91 @@
-import { IconRestruernt, IconStar } from "@/assets/Icon";
-import { router } from "expo-router";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import { SvgXml } from "react-native-svg";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import tw from "../../lib/tailwind";
-import { makeImage } from "../../redux/api/baseApi";
-import { useGetRandomuserUserPostQuery } from "../../redux/randomuserApi/randomuserApi";
-import { cardViewDate } from "../../utils/cardViewDate";
+import { useLazyGetRandomuserUserPostQuery } from "../../redux/randomuserApi/randomuserApi";
+import RandomUserRecentView from "./RandomUserRecentView";
 
 const RecentsActiveList = ({ user_id }) => {
-  // console.log(user_id);
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const { data, isLoading, refreshing, onRefresh } =
-    useGetRandomuserUserPostQuery({
-      user_id: user_id,
-    });
-  console.log("random user post ", data?.data?.data);
+  const [fetchPosts, { isFetching }] = useLazyGetRandomuserUserPostQuery();
+
+  const loadPosts = async (pageNum = 1, isRefresh = false) => {
+    try {
+      const res = await fetchPosts({ user_id, page: pageNum }).unwrap();
+      const newPosts = res?.data?.data || [];
+
+      if (isRefresh) {
+        setPosts(newPosts);
+      } else {
+        setPosts((prev) => [...prev, ...newPosts]);
+      }
+
+      setHasMore(res?.data?.current_page < res?.data?.last_page);
+      setPage(res?.data?.current_page + 1);
+    } catch (error) {
+      console.error("Failed to fetch posts:", error);
+    } finally {
+      setRefreshing(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadPosts(1, true);
+  };
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore) {
+      setLoadingMore(true);
+      loadPosts(page);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   return (
-    <View style={tw``}>
+    <View style={tw`flex-1`}>
       <FlatList
-        data={data?.data?.data}
+        data={posts}
         keyExtractor={(item) => item?.id?.toString()}
-        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <RandomUserRecentView item={item} />}
         contentContainerStyle={tw`pb-6`}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={refreshing}
-        //     onRefresh={onRefresh}
-        //     colors={["#ED6237"]}
-        //     tintColor="#ED6237"
-        //   />
-        // }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            key={item?.id}
-            onPress={() => router.push(`/notifications/${item?.id}`)}
-          >
-            <View style={tw`flex-col my-2 justify-between items-center`}>
-              <View
-                style={tw`flex-row bg-[#D5D5D51A] p-2 rounded-2xl items-center`}
-              >
-                {/* Image */}
-
-                {/* Content */}
-                <View style={tw`flex-1`}>
-                  <View style={tw`flex-row justify-between items-start`}>
-                    {/* Title and Rating */}
-                    <View style={tw`flex-row`}>
-                      <Image
-                        // source={foodImage}
-                        source={{ uri: makeImage(item?.photo[0]) }}
-                        style={tw`w-18 h-18 rounded-[8px] mr-4`}
-                      />
-                      <View
-                        style={tw`flex-col  ${
-                          item?.location ? " justify-between" : "justify-start"
-                        }   `}
-                      >
-                        <View style={tw`flex-col justify-between`}>
-                          <Text
-                            style={tw`text-base font-inter-700 text-textPrimary`}
-                          >
-                            {item?.meal_name}
-                          </Text>
-
-                          <View style={tw`flex-row items-center mt-1`}>
-                            <SvgXml xml={item?.location && IconRestruernt} />
-                            {item?.location && (
-                              <Text
-                                style={tw`text-[#454545] ml-1 font-inter-400 text-sm`}
-                              >
-                                {item?.location || "UnKnown"}
-                              </Text>
-                            )}
-                          </View>
-                        </View>
-
-                        {/* Tags */}
-                        <View style={tw`flex-row `}>
-                          <Text
-                            style={tw`text-[12px] font-inter-600 text-[#454545] mr-2`}
-                          >
-                            {item?.food_type}
-                          </Text>
-                          <Text
-                            style={tw`text-[12px] font-inter-600 text-[#454545]`}
-                          >
-                            {item?.have_it}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* Location and Date */}
-                    <View style={tw`flex-col justify-between items-end `}>
-                      {item?.rating && (
-                        <View style={tw`flex-row items-center`}>
-                          {/* <FontAwesome name="star" size={16} color="#facc15" /> */}
-                          <SvgXml xml={IconStar} />
-                          <Text
-                            style={tw`ml-1 text-textPrimary font-inter-600`}
-                          >
-                            {item?.rating}
-                          </Text>
-                        </View>
-                      )}
-                      <Text
-                        style={tw`text-[#454545] font-inter-400 text-sm mt-1`}
-                      >
-                        {cardViewDate(item?.created_at)}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={["#ED6237"]}
+            tintColor="#ED6237"
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator size="small" color="#ED6237" style={tw`my-4`} />
+          ) : null
+        }
+        ListEmptyComponent={
+          !isFetching && posts.length === 0 ? (
+            <Text style={tw`text-center text-gray-500 mt-10`}>
+              No recent posts found.
+            </Text>
+          ) : null
+        }
       />
     </View>
   );
