@@ -96,7 +96,7 @@ const Bookmarks = () => {
             />
             <Text style={tw`text-gray-700`}>
               {/* {tabs.find((t) => t.id === activeTab)?.count} */}
-              {data?.data?.total || 0}
+              {data?.data?.length || 0}
             </Text>
           </View>
         </View>
