@@ -21,12 +21,13 @@ import tw from "../../lib/tailwind";
 // Components
 import BlockModal from "../../components/ui/BlockModal";
 import RandomUserProfile from "../../components/ui/RandomUserProfile";
-import RecentsActiveList from "../../components/ui/RecentsActiveList";
 import RecipesActivityList from "../../components/ui/RecipesActivityList";
 
 // Redux
+import RecentActivityListRandomUser from "../../components/ui/RecentActivityListRandomUser";
 import ReportInput from "../../components/ui/ReportInput";
 import RestaurantsListRandomUser from "../../components/ui/RestaurantsListRandomUser";
+import { useGetUserAllFolloweQuery } from "../../redux/profileApi/profileApi";
 import {
   useGeRandomuserUserDiscoveryToggleFollowMutation,
   useGetRandomuserUserQuery,
@@ -50,6 +51,9 @@ const RandomUser = () => {
     refetch,
   } = useGetRandomuserUserQuery({ user_id: id });
 
+  const { data } = useGetUserAllFolloweQuery();
+  console.log("data : ", data);
+
   const bottomSheetRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState(tabs[0]?.id);
@@ -64,7 +68,7 @@ const RandomUser = () => {
   const [toggleFollow, { isLoading: loadingFollow }] =
     useGeRandomuserUserDiscoveryToggleFollowMutation();
 
-  const snapPoints = useMemo(() => ["50%", "80%"], []);
+  const snapPoints = useMemo(() => ["30%", "50%"], []);
 
   const isFollowing = randomUser?.data?.status === "Following";
 
@@ -123,7 +127,7 @@ const RandomUser = () => {
             {/* Header */}
             <View style={tw`flex-row justify-between items-center`}>
               <View style={tw`flex-row items-center gap-2 my-2`}>
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={() => router?.back()}>
                   <MaterialIcons
                     name="arrow-back-ios"
                     size={24}
@@ -201,7 +205,7 @@ const RandomUser = () => {
             {/* Tab Content */}
             <View style={tw`flex-1`}>
               {showRecent ? (
-                <RecentsActiveList user_id={id} />
+                <RecentActivityListRandomUser user_id={id} />
               ) : activeTab === "Restaurants" ? (
                 <RestaurantsListRandomUser id={id} />
               ) : (

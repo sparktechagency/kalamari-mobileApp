@@ -82,33 +82,33 @@
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   RefreshControl,
   Text,
   View,
 } from "react-native";
 import tw from "../../lib/tailwind";
-import {
-  useDeletedRecentPostMutation,
-  useLazyGetMyAllPostQuery,
-} from "../../redux/profileApi/profileApi";
-import ProfileRanderItem from "./ProfileRanderItem"; // assuming you have this component
 
-const RecentActivityListRandomUser = () => {
+import { useLazyGetRandomuserUserPostQuery } from "../../redux/randomuserApi/randomuserApi";
+import RandomProfileRanderItem from "./RandomProfileRanderItem";
+
+const RecentActivityListRandomUser = ({ user_id }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true); // to control if more data is available
 
-  const [fetchPosts, { isLoading }] = useLazyGetMyAllPostQuery();
-  const [deleteRecent, { isLoading: deleteLoading }] =
-    useDeletedRecentPostMutation();
+  const [fetchPosts, { isLoading }] = useLazyGetRandomuserUserPostQuery();
+  // const [deleteRecent, { isLoading: deleteLoading }] =
+  //   useDeletedRecentPostMutation();
 
   const loadPosts = async (pageNum = 1, isRefresh = false) => {
     try {
-      const res = await fetchPosts({ page: pageNum }).unwrap();
+      const res = await fetchPosts({
+        user_id: user_id,
+        page: pageNum,
+      }).unwrap();
 
       const newPosts = res?.data?.data || [];
 
@@ -128,6 +128,8 @@ const RecentActivityListRandomUser = () => {
     }
   };
 
+  // console.log("posts : ", posts);
+
   const handleRefresh = () => {
     setRefreshing(true);
     loadPosts(1, true);
@@ -140,34 +142,14 @@ const RecentActivityListRandomUser = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    Alert.alert(
-      "Delete Recents",
-      "Are you sure you want to delete this Recent?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteRecent({ post_id: id }).unwrap();
-              setPosts((prev) => prev.filter((item) => item.id !== id));
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ]
-    );
-  };
-
   useEffect(() => {
     loadPosts();
   }, []);
 
-  return isLoading && posts.length === 0 ? (
-    <View style={tw`flex-1 justify-center items-center`}>
+  // console.log("posts", posts);
+
+  return isLoading && posts?.length === 0 ? (
+    <View style={tw`flex-1 justify-center items-center `}>
       <ActivityIndicator size="large" color="#F97316" />
     </View>
   ) : (
@@ -175,6 +157,7 @@ const RecentActivityListRandomUser = () => {
       <FlatList
         data={posts}
         keyExtractor={(item) => item?.id?.toString()}
+        renderItem={({ item }) => <RandomProfileRanderItem item={item} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
         refreshControl={
@@ -199,9 +182,6 @@ const RecentActivityListRandomUser = () => {
             </Text>
           ) : null
         }
-        renderItem={({ item }) => (
-          <ProfileRanderItem handleDelete={handleDelete} item={item} />
-        )}
       />
     </View>
   );

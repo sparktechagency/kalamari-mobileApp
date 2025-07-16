@@ -4,6 +4,7 @@ import { Dimensions, Pressable, Text, View } from "react-native";
 // import * as Contacts from "expo-contacts";
 import { router } from "expo-router";
 import Header from "../../../components/ui/Header";
+import UserDiscovery from "../../../components/ui/UserDiscovery";
 import UserPost from "../../../components/ui/UserPost";
 import tw from "../../../lib/tailwind";
 import { storage } from "../../../utils/storage";
@@ -21,23 +22,7 @@ const Home = () => {
     fetchToken();
   }, []);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Contacts.requestPermissionsAsync();
-  //     if (status === "granted") {
-  //       const { data } = await Contacts.getContactsAsync({
-  //         fields: [Contacts.Fields.Emails],
-  //       });
-
-  //       if (data.length > 0) {
-  //         const contact = data[0];
-  //         console.log(contact);
-  //       }
-  //     }
-  //   })();
-  // }, []);
-
-  const [isActiveTab, setIsActiveTab] = useState("Following");
+  const [isActiveTab, setIsActiveTab] = useState("Discovery");
 
   const { width } = Dimensions.get("window");
 
@@ -52,7 +37,7 @@ const Home = () => {
             <View
               style={tw`flex-row gap-2 w-[70%]   items-center justify-center  bg-[#3333331A] p-2 rounded-full `}
             >
-              {tab.map((item, index) => (
+              {tab?.map((item, index) => (
                 <View key={index} style={tw``}>
                   <Pressable onPress={() => setIsActiveTab(item)}>
                     <Text
@@ -77,7 +62,7 @@ const Home = () => {
 
         {/* view all user post  */}
         <View style={tw` flex-1 `}>
-          <UserPost isActiveTab={isActiveTab} />
+          {isActiveTab === "Following" ? <UserPost /> : <UserDiscovery />}
         </View>
         {/*  j */}
       </View>

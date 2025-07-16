@@ -1,6 +1,7 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import tw from "../../lib/tailwind";
 import { makeImage } from "../../redux/api/baseApi";
+import { cardViewDate } from "../../utils/cardViewDate";
 
 const NotificationView = ({ item, handleNotificationPress, readIds }) => {
   return (
@@ -30,7 +31,9 @@ const NotificationView = ({ item, handleNotificationPress, readIds }) => {
                   {item?.message || "just followed you."}
                 </Text>
               </View>
-              <Text style={tw`text-textgray`}>{item?.created_at}</Text>
+              <Text style={tw`text-textgray`}>
+                {cardViewDate(item?.created_at)}
+              </Text>
             </View>
           </View>
 

@@ -7,6 +7,7 @@ import { Formik } from "formik";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
@@ -61,17 +62,24 @@ export default function Index() {
 
     try {
       const response = await userLogin(userData).unwrap();
-      // console.log("api response ", response);
 
       if (response?.token) {
-        await storage.set("token", response?.token);
-        await storage.set("user", JSON.stringify(response?.user));
-        // console.log("login_user : ", login_user, response.user);
-        // Alert.alert("Success", response?.message);
+        await storage.set("token", response.token);
+        await storage.set("user", JSON.stringify(response.user));
+
         router.push("/(tab)");
       }
     } catch (error) {
-      console.log(error);
+      console.log("Login Error:", error);
+
+      // Gracefully extract error message
+      const errorMessage =
+        error?.data?.message ||
+        error?.data ||
+        error?.error ||
+        "Login failed. Please try again.";
+
+      Alert.alert("Login Failed", errorMessage);
     }
 
     // router.push("(tab)");

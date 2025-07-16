@@ -26,7 +26,7 @@ const RestaurantsListRandomUser = ({ id }) => {
       {/* when the api changes ScrollView and adds flatList  */}
       <FlatList
         data={data}
-        keyExtractor={(index, item) => item?.id?.toString()}
+        keyExtractor={(item) => item?.id?.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
         renderItem={({ item }) => (

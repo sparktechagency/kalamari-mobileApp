@@ -12,15 +12,13 @@ import { makeImage } from "../../redux/api/baseApi";
 import { useGetRandomAllBookMarkQuery } from "../../redux/randomuserApi/randomuserApi";
 import { cardViewDate } from "../../utils/cardViewDate";
 
-// const DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 const RecipesActivityList = ({ id }) => {
   const { data, refetch, isLoading } = useGetRandomAllBookMarkQuery({
     type: 2,
     user_id: id,
   });
 
-  console.log(data);
+  // console.log(data);
 
   // ---------------------------------------------------------
   return isLoading ? (
@@ -37,8 +35,8 @@ const RecipesActivityList = ({ id }) => {
         contentContainerStyle={tw`pb-6`}
         renderItem={({ item }) => (
           <TouchableOpacity
-            key={item?.id}
             onPress={() => router.push(`/notifications/${item?.id}`)}
+            key={item?.id}
           >
             <View style={tw`flex-col my-2 justify-between items-center`}>
               <View
@@ -73,8 +71,6 @@ const RecipesActivityList = ({ id }) => {
                         {cardViewDate(item?.created_at)}
                       </Text>
                     </View>
-                    {/* <FontAwesome name="star" size={16} color="#facc15" />
-                    <SvgXml xml={IconsListDeleted} /> */}
                   </View>
 
                   {/* Tags */}
@@ -91,9 +87,6 @@ const RecipesActivityList = ({ id }) => {
                         {item?.have_it}
                       </Text>
                     </View>
-                    {/* <TouchableOpacity onPress={handleDelete}>
-                      <SvgXml xml={IconsListDeleted} />
-                    </TouchableOpacity> */}
                   </View>
                 </View>
               </View>

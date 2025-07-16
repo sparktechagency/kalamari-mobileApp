@@ -67,7 +67,7 @@ const MyList = ({ isLoading, data }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              router?.push("/notifications/1");
+              router?.push(`/notifications/${item?.id}`);
             }}
             key={item?.id}
           >

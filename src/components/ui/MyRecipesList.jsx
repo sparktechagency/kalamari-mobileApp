@@ -20,7 +20,6 @@ import { cardViewDate } from "../../utils/cardViewDate";
 const MyRecipesList = ({ isLoading, data }) => {
   const handleNavigate = () => {
     // console.log("asdfg");
-    router.push(`/notifications/${1}`);
   };
 
   const [deletedPost] = useDeletedBookMarkSinglePostMutation();
@@ -72,7 +71,10 @@ const MyRecipesList = ({ isLoading, data }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-6`}
         renderItem={({ item }) => (
-          <TouchableOpacity key={item?.id} onPress={handleNavigate}>
+          <TouchableOpacity
+            key={item?.id}
+            onPress={() => router.push(`/notifications/${item?.id}`)}
+          >
             <View style={tw`flex-col my-2 justify-between items-center`}>
               <View
                 style={tw`flex-row gap-4 bg-[#D5D5D51A] p-2 rounded-2xl items-center`}

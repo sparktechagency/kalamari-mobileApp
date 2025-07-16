@@ -25,7 +25,7 @@ const Header = () => {
 
   // console.log(id);
 
-  console.log(allNotification?.unread_count);
+  // console.log(allNotification);
 
   const handlePress = () => {
     if (!clicked) {

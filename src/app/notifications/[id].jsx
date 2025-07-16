@@ -234,8 +234,6 @@ const PostViewCard = () => {
     // router.push(`randomuser/${id}`);
   };
 
-  // console.log();
-
   return isLoading ? (
     <View style={tw`flex-1 justify-center items-center`}>
       <ActivityIndicator size="large" color="#F97316" />
@@ -246,9 +244,10 @@ const PostViewCard = () => {
         {/* --- User Info Header --- */}
         <View style={tw`flex-row items-center gap-2`}>
           <TouchableOpacity onPress={() => handleNavigate(data?.data?.user_id)}>
+            {/*  -> -------------- user image  */}
             <Image
               source={{
-                uri: makeImage(data?.data?.photo) || DEFAULT_AVATAR,
+                uri: makeImage(data?.data?.avatar) || DEFAULT_AVATAR,
               }}
               style={tw`w-10 h-10 rounded-full`}
             />
@@ -273,7 +272,7 @@ const PostViewCard = () => {
                       key={index}
                       style={tw`text-[12px] font-inter-700 text-[#454545]`}
                     >
-                      #{tag}
+                      {tag && `#${tag}`}
                     </Text>
                   ))}
                 </View>
@@ -307,14 +306,14 @@ const PostViewCard = () => {
         </View>
 
         {/* --- Reactions, Bookmark, Share --- */}
-        <View style={tw`flex-row items-center mt-3 mr-[5%]`}>
-          <View style={tw`flex-row items-center gap-4`}>
+        <View style={tw`flex-row items-center `}>
+          <View style={tw`flex-row items-center w-[40%] gap-2`}>
             <View style={tw`flex-row items-center gap-1`}>
               <TouchableOpacity onPress={() => handleHeart(data?.data?.id)}>
                 <SvgXml xml={isLiked ? IconHeart : IconLove} />
               </TouchableOpacity>
               <Text style={tw`text-[13px] font-inter-600 text-[#454545]`}>
-                {loveCount}
+                {loveCount > 0 && loveCount}
               </Text>
             </View>
             <ButtomSheet item={data?.data} />

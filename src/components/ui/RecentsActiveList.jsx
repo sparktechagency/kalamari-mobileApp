@@ -61,7 +61,9 @@ const RecentsActiveList = ({ user_id }) => {
       <FlatList
         data={posts}
         keyExtractor={(item) => item?.id?.toString()}
-        renderItem={({ item }) => <RandomUserRecentView item={item} />}
+        renderItem={({ item }) => (
+          <RandomUserRecentView key={item?.id} item={item} />
+        )}
         contentContainerStyle={tw`pb-6`}
         showsVerticalScrollIndicator={false}
         refreshControl={

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import ProfileViewImage from "../../../components/ui/ProfileViewImage";
-import RecentActivityList from "../../../components/ui/RecentActivityListRandomUser";
+import RecentActivityList from "../../../components/ui/RecentActivityList";
 import tw from "../../../lib/tailwind";
 import { useGetProfileQuery } from "../../../redux/apiSlices/authApiSlice";
 import {

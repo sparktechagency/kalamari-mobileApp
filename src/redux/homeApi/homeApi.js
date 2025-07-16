@@ -22,6 +22,17 @@ export const homeApi = api.injectEndpoints({
       }),
       providesTags: ["home"],
     }),
+    followingAllPost: builder.query({
+      query: ({ page, perPage = 10 } = {}) => ({
+        url: `/following`,
+        method: "GET",
+        params: {
+          page,
+          per_page: perPage,
+        },
+      }),
+      providesTags: ["home"],
+    }),
     userDiscoveryAllPost: builder.query({
       query: () => ({
         url: `/discovery`,
@@ -52,4 +63,5 @@ export const {
   useUserDiscoveryAllPostQuery,
   useDiscoveryAllPostQuery,
   useLazyDiscoveryAllPostQuery,
+  useLazyFollowingAllPostQuery,
 } = homeApi;
